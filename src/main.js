@@ -183,6 +183,7 @@ function init() {
   if (isMobile) {
     // Mobile touch events are handled via UI elements
     console.log('📱 Mobile device detected - Touch controls enabled');
+    debugLog('Mobile mode ACTIVE');
   } else {
     // Desktop mouse events
     renderer.domElement.addEventListener('click', onCanvasClick);
@@ -1561,23 +1562,50 @@ function createUI() {
   }
 }
 
+// Debug logger
+function debugLog(msg) {
+  let debug = document.getElementById('debug-log');
+  if (!debug) {
+    debug = document.createElement('div');
+    debug.id = 'debug-log';
+    debug.style.position = 'fixed';
+    debug.style.top = '10px';
+    debug.style.left = '10px';
+    debug.style.color = '#0f0';
+    debug.style.zIndex = '9999';
+    debug.style.pointerEvents = 'none';
+    debug.style.fontSize = '12px';
+    debug.style.fontFamily = 'monospace';
+    debug.style.background = 'rgba(0,0,0,0.5)';
+    document.body.appendChild(debug);
+  }
+  debug.innerHTML += `<div>${msg}</div>`;
+  // Keep last 10 lines
+  const lines = debug.children;
+  if (lines.length > 10) debug.removeChild(lines[0]);
+  console.log(msg);
+}
+
 // ==================== MOBILE TOUCH HANDLERS ====================
 let lookTouchId = null;
 
 function onTouchStart(event) {
   event.preventDefault();
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning) {
+    debugLog('Game not running');
+    return;
+  }
 
   for (let i = 0; i < event.changedTouches.length; i++) {
     const touch = event.changedTouches[i];
-    // If we aren't already looking with a finger, grab this one
-    // (Ensure it's not the joystick finger or fire button)
-    if (lookTouchId === null && touch.target.id === 'look-area') {
+    // Relaxed check: just ensure lookTouchId is free
+    if (lookTouchId === null) {
       lookTouchId = touch.identifier;
       touchStartX = touch.clientX;
       touchStartY = touch.clientY;
       lastTouchX = touch.clientX;
       lastTouchY = touch.clientY;
+      debugLog('Look touch started: ' + touch.identifier);
     }
   }
 }
@@ -1658,6 +1686,7 @@ function onJoystickStart(event) {
     if (joystickTouchId === null) {
       joystickTouchId = touch.identifier;
       joystickActive = true;
+      debugLog('Joystick started: ' + touch.identifier);
 
       // Initial move if they tapped off-center
       updateJoystick(touch.clientX, touch.clientY);
