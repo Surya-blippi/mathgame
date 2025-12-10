@@ -2166,7 +2166,6 @@ function endGame() {
   // Hide mobile controls
   if (isMobile) {
     document.getElementById('mobile-controls').classList.remove('show');
-    document.getElementById('mobile-aim').classList.remove('show');
   }
 
   document.getElementById('final-score').textContent = gameState.score;
