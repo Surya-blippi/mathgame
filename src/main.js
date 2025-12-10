@@ -1535,9 +1535,29 @@ function createUI() {
   mobileAim.id = 'mobile-aim';
   app.appendChild(mobileAim);
 
+  // Mobile hint
+  const mobileHint = document.createElement('div');
+  mobileHint.id = 'mobile-hint';
+  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Slide RIGHT side to Look</span><span>🔥 Tap RED button to Shoot</span>';
+  app.appendChild(mobileHint);
+
   // Event listeners
-  document.getElementById('start-btn').addEventListener('click', startGame);
-  document.getElementById('restart-btn').addEventListener('click', startGame);
+  const startBtn = document.getElementById('start-btn');
+  const restartBtn = document.getElementById('restart-btn');
+
+  startBtn.addEventListener('click', startGame);
+  restartBtn.addEventListener('click', startGame);
+
+  // Ensure touch also triggers start (sometimes click is delayed/blocked)
+  startBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startGame();
+  }, { passive: false });
+
+  restartBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    startGame();
+  }, { passive: false });
 
   // Mobile touch event listeners
   if (isMobile) {

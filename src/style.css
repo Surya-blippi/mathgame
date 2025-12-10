@@ -660,3 +660,32 @@ canvas {
     flex-direction: column;
   }
 }
+
+#mobile-hint {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--primary);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s;
+  width: 80%;
+}
+
+#mobile-hint.show {
+  opacity: 1;
+}
+
+#mobile-hint span {
+  display: block;
+  margin: 5px 0;
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+}
