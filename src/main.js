@@ -47,17 +47,17 @@ function preloadRobotModel() {
 const gameState = {
   score: 0,
   wave: 1,
-  health: 150,
-  maxHealth: 150,
+  health: 100,
+  maxHealth: 100,
   combo: 1,
   kills: 0,
-  isRunning: false,
-  isPaused: false
+  isRunning: false
 };
 
 // ==================== THREE.JS SETUP ====================
 let scene, camera, renderer;
 let robots = [];
+let pickups = [];
 let particles = [];
 let bullets = [];
 let clock;
@@ -1387,6 +1387,76 @@ class BulletTrail {
   }
 }
 
+// ==================== HEALTH PICKUP ====================
+class HealthPickup {
+  constructor(position) {
+    this.mesh = new THREE.Group();
+
+    // Create cross shape
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x00ff00,
+      emissive: 0x004400,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+
+    const vBarGeo = new THREE.BoxGeometry(0.6, 2, 0.6);
+    const hBarGeo = new THREE.BoxGeometry(2, 0.6, 0.6);
+
+    const vBar = new THREE.Mesh(vBarGeo, material);
+    const hBar = new THREE.Mesh(hBarGeo, material);
+
+    this.mesh.add(vBar);
+    this.mesh.add(hBar);
+
+    // Inner glow
+    const glowGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0x88ff88, transparent: true, opacity: 0.5 });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    this.mesh.add(glow);
+
+    this.mesh.position.copy(position);
+    this.mesh.position.y = 1.5; // Float height
+
+    // Add point light
+    this.light = new THREE.PointLight(0x00ff00, 1, 5);
+    this.light.position.set(0, 0, 0);
+    this.mesh.add(this.light);
+
+    scene.add(this.mesh);
+
+    this.scale = 0;
+    this.targetScale = 0.4;
+    this.mesh.scale.set(0, 0, 0);
+
+    this.rotationSpeed = 2;
+    this.bobSpeed = 3;
+    this.time = Math.random() * 100;
+  }
+
+  update(deltaTime) {
+    // Rotation
+    this.mesh.rotation.y += this.rotationSpeed * deltaTime;
+    this.mesh.rotation.x = Math.sin(this.time) * 0.2;
+    this.mesh.rotation.z = Math.cos(this.time) * 0.2;
+
+    // Bobbing
+    this.time += deltaTime * this.bobSpeed;
+    this.mesh.position.y = 1.5 + Math.sin(this.time) * 0.3;
+
+    // Scale animation
+    if (this.scale < this.targetScale) {
+      this.scale += deltaTime * 2;
+      if (this.scale > this.targetScale) this.scale = this.targetScale;
+      this.mesh.scale.set(this.scale, this.scale, this.scale);
+    }
+  }
+
+  remove() {
+    scene.remove(this.mesh);
+  }
+}
+
 // ==================== UI ====================
 function createUI() {
   const app = document.getElementById('app');
@@ -1921,6 +1991,13 @@ function playSound(type) {
       gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
       break;
+    case 'pickup':
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+      oscillator.frequency.linearRampToValueAtTime(800, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      break;
   }
 
   oscillator.start();
@@ -1972,6 +2049,11 @@ function onShoot(event) {
 
         document.getElementById('score').textContent = gameState.score;
         document.getElementById('combo').textContent = `x${gameState.combo}`;
+
+        // Chance to drop health pickup (30%)
+        if (Math.random() < 0.3) {
+          pickups.push(new HealthPickup(robot.group.position.clone()));
+        }
 
         // Check for wave advancement (every 5 kills)
         if (gameState.kills % 5 === 0) {
@@ -2046,11 +2128,15 @@ function startGame() {
   gameState.kills = 0;
   gameState.isRunning = true;
 
-  // Clear existing robots
+  // Clear existing robots and pickups
   for (const robot of robots) {
     scene.remove(robot.group);
   }
+  for (const pickup of pickups) {
+    scene.remove(pickup.mesh);
+  }
   robots = [];
+  pickups = [];
   particles = [];
   bullets = [];
 
@@ -2141,6 +2227,29 @@ function animate() {
 
     // Update bullet trails
     bullets = bullets.filter(b => b.update(deltaTime));
+
+    // Update pickups
+    for (const pickup of pickups) {
+      pickup.update(deltaTime);
+
+      // Check collision with player
+      const dist = camera.position.distanceTo(pickup.mesh.position);
+      if (dist < 3) { // Collection radius
+        // Heal player
+        const oldHealth = gameState.health;
+        gameState.health = Math.min(gameState.maxHealth, gameState.health + 20);
+
+        if (gameState.health > oldHealth) {
+          updateHealthBar();
+          playSound('pickup');
+          showDamageNumber({ x: window.innerWidth / 2, y: window.innerHeight / 2 + 50 }, '+20 HP', true);
+        }
+
+        pickup.remove();
+        pickup.collected = true;
+      }
+    }
+    pickups = pickups.filter(p => !p.collected);
 
     // Update question display
     updateQuestionDisplay();
