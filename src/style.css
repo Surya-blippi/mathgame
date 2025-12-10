@@ -541,6 +541,49 @@ canvas {
   }
 }
 
+/* ==================== DAMAGE OVERLAY ==================== */
+#damage-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 50%, rgba(255, 0, 0, 0.6) 100%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+
+/* ==================== THREAT INDICATOR ==================== */
+#threat-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30vmin;
+  height: 30vmin;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0;
+  /* Hidden by default */
+  transition: opacity 0.2s;
+}
+
+.threat-arrow {
+  width: 4vmin;
+  height: 4vmin;
+  border-left: 1vmin solid transparent;
+  border-right: 1vmin solid transparent;
+  border-bottom: 4vmin solid #ff0000;
+  filter: drop-shadow(0 0 1vmin #ff0000);
+  transform-origin: center 15vmin;
+  /* Rotate around center of screen */
+}
+
 /* ==================== MOBILE CONTROLS ==================== */
 #mobile-controls {
   display: none;

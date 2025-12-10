@@ -44,20 +44,7 @@ function preloadRobotModel() {
 }
 
 function loadFootstepSound() {
-  const loader = new THREE.AudioLoader();
-  loader.load(
-    'footsteps.wav',
-    (buffer) => {
-      footstepBuffer = buffer;
-      console.log('Footstep sound loaded');
-    },
-    (xhr) => {
-      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    },
-    (error) => {
-      console.error('An error happened loading footstep sound', error);
-    }
-  );
+  // Removed
 }
 
 // ==================== GAME STATE ====================
@@ -135,8 +122,6 @@ let muzzleLight;
 // ==================== AUDIO SETUP ====================
 let audioContext;
 let gunSoundBuffer = null;
-let footstepBuffer = null;
-let listener;
 
 // Load gun sound
 async function loadGunSound() {
@@ -172,10 +157,6 @@ function init() {
   // Create camera
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 2, 0);
-
-  // Create listener
-  listener = new THREE.AudioListener();
-  camera.add(listener);
 
   // Create renderer
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -221,9 +202,8 @@ function init() {
   // Create UI (includes mobile controls)
   createUI();
 
-  // Load sounds
+  // Load gun sound
   loadGunSound();
-  loadFootstepSound();
 
   // Start render loop
   try {
@@ -839,18 +819,6 @@ class Robot {
     // Generate Math question
     this.generateMathQuestion();
 
-    // Sound
-    this.sound = null;
-    if (footstepBuffer && listener) {
-      this.sound = new THREE.PositionalAudio(listener);
-      this.sound.setBuffer(footstepBuffer);
-      this.sound.setRefDistance(10); // Distance where volume starts dropping
-      this.sound.setLoop(true);
-      this.sound.setVolume(1.0);
-      this.group.add(this.sound);
-      this.sound.play();
-    }
-
     // Build robot
     this.build();
 
@@ -1223,10 +1191,6 @@ class Robot {
       if (this.dyingTimer > 1) {
         this.alive = false;
         scene.remove(this.group);
-        // Stop sound when robot is removed from scene
-        if (this.sound && this.sound.isPlaying) {
-          this.sound.stop();
-        }
       }
       return;
     }
@@ -1610,6 +1574,12 @@ function createUI() {
   hitMarker.innerHTML = '<div class="hit-x"></div>';
   app.appendChild(hitMarker);
 
+  // Threat Indicator (Directional)
+  const threatIndicator = document.createElement('div');
+  threatIndicator.id = 'threat-indicator';
+  threatIndicator.innerHTML = '<div class="threat-arrow"></div>';
+  app.appendChild(threatIndicator);
+
   // Damage overlay
   const damageOverlay = document.createElement('div');
   damageOverlay.id = 'damage-overlay';
@@ -1989,6 +1959,64 @@ function updateQuestionDisplay() {
   display.style.textShadow = 'none';
 }
 
+function updateThreatIndicator() {
+  const indicator = document.getElementById('threat-indicator');
+  const arrow = indicator.querySelector('.threat-arrow');
+
+  if (!gameState.isRunning || robots.length === 0) {
+    indicator.style.opacity = '0';
+    return;
+  }
+
+  // Find closest robot
+  let closestRobot = null;
+  let minDistance = Infinity;
+  const playerPos = new THREE.Vector3(camera.position.x, 0, camera.position.z);
+
+  for (const robot of robots) {
+    if (robot.dying) continue;
+    const dist = playerPos.distanceTo(new THREE.Vector3(robot.group.position.x, 0, robot.group.position.z));
+    if (dist < minDistance) {
+      minDistance = dist;
+      closestRobot = robot;
+    }
+  }
+
+  // Thresholds
+  const MAX_DETECT_RANGE = 25;
+  const HIGH_DANGER_RANGE = 8;
+
+  if (closestRobot && minDistance < MAX_DETECT_RANGE) {
+    indicator.style.opacity = Math.min(1, 1 - (minDistance - HIGH_DANGER_RANGE) / (MAX_DETECT_RANGE - HIGH_DANGER_RANGE)).toString();
+
+    // Calculate angle relative to camera view
+    // Transform robot position into camera's local space
+    const robotPos = closestRobot.group.position.clone();
+    robotPos.y = camera.position.y; // Ignore height difference
+
+    // We need the relative position of robot to camera, considering camera rotation
+    // Clone camera to not mess with actual camera, calculate local position
+    const relPos = robotPos.clone().sub(camera.position);
+
+    // Rotate this vector by the inverse of camera's yaw (rotation around Y)
+    // We only care about Y rotation (yaw) for the compass
+    const angle = Math.atan2(relPos.x, relPos.z);
+
+    // Camera's current rotation
+    const camAngle = Math.atan2(camera.getWorldDirection(new THREE.Vector3()).x, camera.getWorldDirection(new THREE.Vector3()).z);
+
+    // Difference
+    let bearing = camAngle - angle; // In radians
+
+    // Rotate the arrow
+    // Math.PI offset might be needed depending on initial arrow direction
+    arrow.style.transform = `rotate(${-bearing}rad)`;
+
+  } else {
+    indicator.style.opacity = '0';
+  }
+}
+
 // ==================== AUDIO ====================
 function playSound(type) {
   if (!audioContext) {
@@ -2169,9 +2197,6 @@ function startGame() {
 
   // Clear existing robots and pickups
   for (const robot of robots) {
-    if (robot.sound && robot.sound.isPlaying) {
-      robot.sound.stop();
-    }
     scene.remove(robot.group);
   }
   for (const pickup of pickups) {
@@ -2294,6 +2319,9 @@ function animate() {
 
     // Update question display
     updateQuestionDisplay();
+
+    // Update threat indicator
+    updateThreatIndicator();
   }
 
   renderer.render(scene, camera);
