@@ -1653,32 +1653,7 @@ function onTouchMove(event) {
   }
 }
 
-function onTouchEnd(event) {
-  event.preventDefault();
-  for (let i = 0; i < event.changedTouches.length; i++) {
-    const touch = event.changedTouches[i];
-    if (touch.identifier === lookTouchId) {
-      // Check for Tap to Shoot
-      // We need to retrieve the startTime we manually attached. 
-      // Note: touch objects in changedTouches might be new instances, so we can't rely on properties added to the start touch object persisting unless we stored them externally or the browser implementation allows it.
-      // Safer way: Use a global or closure variable since we only track one look touch at a time.
 
-      // Since we only checked lookTouchId, we can assume this is the one.
-      const duration = Date.now() - (touch.startTime || 0); // This won't work if the object is new.
-
-      // Let's use a simpler heuristic for now: 
-      // If total movement was very small, it's a tap.
-      // But we need to track total distance moved from start.
-
-      // Better approach: Store start info in variables when lookTouchId is set
-      // (See modification in onTouchStart above - wait, I need to store it in variables not on the touch object if the object isn't persistent)
-    }
-  }
-}
-// Correcting logic in next chunk or by rewriting the function completely below.
-// This replacement block is interrupting my thought process. Let's rewrite onTouchStart slightly to use variables and then onTouchEnd.
-
-// RE-WRITING THE CHUNK CONTENT TO BE CORRECT:
 function onTouchEnd(event) {
   event.preventDefault();
   for (let i = 0; i < event.changedTouches.length; i++) {
