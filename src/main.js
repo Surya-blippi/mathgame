@@ -1479,6 +1479,24 @@ function createUI() {
   `;
   app.appendChild(startScreen);
 
+  // Mobile Hint
+  const mobileHint = document.createElement('div');
+  mobileHint.id = 'mobile-hint';
+  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Drag RIGHT side to Look</span><span>💥 Tap RIGHT side to Shoot</span>';
+  app.appendChild(mobileHint);
+
+  // Orientation Warning
+  const orientationWarning = document.createElement('div');
+  orientationWarning.id = 'orientation-warning';
+  orientationWarning.innerHTML = `
+    <div class="warning-content">
+      <div class="rotate-icon">📱 ➡️ 🔄</div>
+      <h2>LANDSCAPE REQUIRED</h2>
+      <p>Rotate device to initiate neural link</p>
+    </div>
+  `;
+  app.appendChild(orientationWarning);
+
   // HUD Container
   const hud = document.createElement('div');
   hud.id = 'hud';
@@ -1603,11 +1621,7 @@ function createUI() {
   `;
   app.appendChild(mobileControls);
 
-  // Mobile hint
-  const mobileHint = document.createElement('div');
-  mobileHint.id = 'mobile-hint';
-  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Drag RIGHT side to Look</span><span>💥 Tap RIGHT side to Shoot</span>';
-  app.appendChild(mobileHint);
+
 
   // Event listeners
   const startBtn = document.getElementById('start-btn');

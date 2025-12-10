@@ -658,3 +658,74 @@ canvas {
   font-family: 'Orbitron', sans-serif;
   font-size: 4vmin;
 }
+
+/* ==================== ORIENTATION WARNING ==================== */
+#orientation-warning {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.warning-content {
+  color: var(--primary);
+  font-family: 'Orbitron', sans-serif;
+}
+
+.rotate-icon {
+  font-size: 15vmin;
+  margin-bottom: 5vmin;
+  animation: rotate-phone 2s infinite ease-in-out;
+}
+
+#orientation-warning h2 {
+  font-size: 5vmin;
+  margin-bottom: 2vmin;
+  color: var(--danger);
+  text-transform: uppercase;
+}
+
+#orientation-warning p {
+  font-size: 3vmin;
+  color: #fff;
+  opacity: 0.8;
+}
+
+@keyframes rotate-phone {
+
+  0%,
+  10% {
+    transform: rotate(0deg);
+  }
+
+  40%,
+  60% {
+    transform: rotate(90deg);
+  }
+
+  90%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Force Landscape on Mobile */
+@media screen and (orientation: portrait) and (max-width: 900px) {
+  #orientation-warning {
+    display: flex;
+  }
+
+  /* Blur background to indicate disabled state */
+  #app canvas,
+  #hud,
+  #start-screen {
+    filter: blur(10px);
+    pointer-events: none;
+  }
+}
