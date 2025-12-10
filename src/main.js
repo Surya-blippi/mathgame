@@ -1,3 +1,27 @@
+// Global error handler for mobile debugging
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '100%';
+  container.style.background = 'rgba(255,0,0,0.9)';
+  container.style.color = 'white';
+  container.style.padding = '20px';
+  container.style.zIndex = '99999';
+  container.style.fontSize = '14px';
+  container.style.fontFamily = 'monospace';
+  container.innerHTML = `
+    <h3>CRITICAL ERROR</h3>
+    <p><strong>Message:</strong> ${msg}</p>
+    <p><strong>Line:</strong> ${lineNo}:${columnNo}</p>
+    <p><strong>URL:</strong> ${url}</p>
+    <p><strong>Stack:</strong> ${error ? error.stack : 'N/A'}</p>
+  `;
+  document.body.appendChild(container);
+  return false;
+};
+
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
