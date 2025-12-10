@@ -1525,20 +1525,13 @@ function createUI() {
       <div id="joystick-knob"></div>
     </div>
     <div id="look-area"></div>
-    <div id="fire-button"></div>
-    <div id="jump-button"></div>
   `;
   app.appendChild(mobileControls);
-
-  // Mobile aim indicator
-  const mobileAim = document.createElement('div');
-  mobileAim.id = 'mobile-aim';
-  app.appendChild(mobileAim);
 
   // Mobile hint
   const mobileHint = document.createElement('div');
   mobileHint.id = 'mobile-hint';
-  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Slide RIGHT side to Look</span><span>🔥 Tap RED button to Shoot</span>';
+  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Drag RIGHT side to Look</span><span>💥 Tap RIGHT side to Shoot</span>';
   app.appendChild(mobileHint);
 
   // Event listeners
@@ -1561,21 +1554,12 @@ function createUI() {
 
   // Mobile touch event listeners
   if (isMobile) {
-    const lookArea = document.getElementById('look-area');
-    const fireButton = document.getElementById('fire-button');
-    const joystickContainer = document.getElementById('joystick-container');
-    const jumpButton = document.getElementById('jump-button'); // Assuming jump logic exists or will be added
-
-    // Touch look controls
+    // Touch look controls (Right side of screen)
     lookArea.addEventListener('touchstart', onTouchStart, { passive: false });
     lookArea.addEventListener('touchmove', onTouchMove, { passive: false });
     lookArea.addEventListener('touchend', onTouchEnd, { passive: false });
 
-    // Fire button
-    fireButton.addEventListener('touchstart', onFireButtonPress, { passive: false });
-    fireButton.addEventListener('touchend', onFireButtonRelease, { passive: false });
-
-    // Joystick controls
+    // Joystick controls (Left side of screen)
     joystickContainer.addEventListener('touchstart', onJoystickStart, { passive: false });
     joystickContainer.addEventListener('touchmove', onJoystickMove, { passive: false });
     joystickContainer.addEventListener('touchend', onJoystickEnd, { passive: false });
@@ -1608,6 +1592,11 @@ function debugLog(msg) {
 
 // ==================== MOBILE TOUCH HANDLERS ====================
 let lookTouchId = null;
+let touchStartTime = 0;
+// touchStartX/Y are already defined above
+let lastTapTime = 0;
+const TAP_THRESHOLD = 200; // ms to consider a tap vs hold/drag
+const TAP_MOVE_THRESHOLD = 10; // pixels movement allowed for a tap
 
 function onTouchStart(event) {
   event.preventDefault();
@@ -1625,7 +1614,11 @@ function onTouchStart(event) {
       touchStartY = touch.clientY;
       lastTouchX = touch.clientX;
       lastTouchY = touch.clientY;
-      debugLog('Look touch started: ' + touch.identifier);
+
+      // Store time for tap detection
+      touchStartTime = Date.now();
+
+      debugLog('Look/Fire touch started');
     }
   }
 }
@@ -1663,7 +1656,47 @@ function onTouchMove(event) {
 function onTouchEnd(event) {
   event.preventDefault();
   for (let i = 0; i < event.changedTouches.length; i++) {
-    if (event.changedTouches[i].identifier === lookTouchId) {
+    const touch = event.changedTouches[i];
+    if (touch.identifier === lookTouchId) {
+      // Check for Tap to Shoot
+      // We need to retrieve the startTime we manually attached. 
+      // Note: touch objects in changedTouches might be new instances, so we can't rely on properties added to the start touch object persisting unless we stored them externally or the browser implementation allows it.
+      // Safer way: Use a global or closure variable since we only track one look touch at a time.
+
+      // Since we only checked lookTouchId, we can assume this is the one.
+      const duration = Date.now() - (touch.startTime || 0); // This won't work if the object is new.
+
+      // Let's use a simpler heuristic for now: 
+      // If total movement was very small, it's a tap.
+      // But we need to track total distance moved from start.
+
+      // Better approach: Store start info in variables when lookTouchId is set
+      // (See modification in onTouchStart above - wait, I need to store it in variables not on the touch object if the object isn't persistent)
+    }
+  }
+}
+// Correcting logic in next chunk or by rewriting the function completely below.
+// This replacement block is interrupting my thought process. Let's rewrite onTouchStart slightly to use variables and then onTouchEnd.
+
+// RE-WRITING THE CHUNK CONTENT TO BE CORRECT:
+function onTouchEnd(event) {
+  event.preventDefault();
+  for (let i = 0; i < event.changedTouches.length; i++) {
+    const touch = event.changedTouches[i];
+    if (touch.identifier === lookTouchId) {
+      // Check tap logic
+      // We need variables tracking start time/pos for the CURRENT lookTouchId
+      // I will add these variables in the global scope near lookTouchId in a separate chunk or rely on the previous chunk having added them (which it didn't fully).
+      // Actually, I'll add them here.
+
+      const timeDiff = Date.now() - touchStartTime;
+      const distDiff = Math.sqrt(Math.pow(touch.clientX - touchStartX, 2) + Math.pow(touch.clientY - touchStartY, 2));
+
+      if (timeDiff < TAP_THRESHOLD && distDiff < TAP_MOVE_THRESHOLD) {
+        debugLog('Tap detected - FIRE!');
+        onShoot();
+      }
+
       lookTouchId = null;
     }
   }
@@ -2022,8 +2055,8 @@ function startGame() {
   // Show appropriate controls based on device
   if (isMobile) {
     document.getElementById('mobile-controls').classList.add('show');
-    document.getElementById('mobile-aim').classList.add('show');
-    document.getElementById('crosshair').classList.add('hidden');
+    // document.getElementById('mobile-aim').classList.add('show'); // Removed
+    document.getElementById('crosshair').classList.remove('hidden'); // Show crosshair on mobile too
 
     // Show hint briefly
     const hint = document.getElementById('mobile-hint');
