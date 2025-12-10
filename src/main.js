@@ -149,7 +149,6 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0a0a1a);
   scene.fog = new THREE.Fog(0x0a0a1a, 10, 100);
-  debugLog('Scene created');
 
   // Create camera
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -193,33 +192,26 @@ function init() {
   }
 
   // Create gun
-  debugLog('Creating Gun...');
   try {
     createGun();
-    debugLog('Gun created');
-  } catch (e) { debugLog('Gun Error: ' + e.message); }
+  } catch (e) { console.error('Gun Error: ' + e.message); }
 
   // Create UI (includes mobile controls)
-  debugLog('Creating UI...');
   createUI();
-  debugLog('UI Created');
 
   // Load gun sound
   loadGunSound();
 
   // Start render loop
-  debugLog('Starting Animate Loop...');
   try {
     animate();
-    debugLog('Animate invoked');
   } catch (e) {
-    debugLog('Animate Call Fail: ' + e.message);
+    console.error('Animate Call Fail: ' + e.message);
   }
 }
 
 // ==================== ENVIRONMENT ====================
 function createEnvironment() {
-  debugLog('Creating environment...');
   // Always create procedural environment first (immediate visibility)
   createProceduralEnvironment();
 
@@ -263,35 +255,29 @@ function createEnvironment() {
 
 // Fallback procedural environment if GLTF fails
 function createProceduralEnvironment() {
-  debugLog('Procedural Env Start');
-  try {
-    // Industrial metal floor with panels - BRIGHTER
-    const floorGeometry = new THREE.PlaneGeometry(120, 120, 40, 40);
-    const floorMaterial = new THREE.MeshStandardMaterial({
-      color: 0x4a4a5a, // Gray instead of near-black is better for visibility
-      roughness: 0.5,
-      metalness: 0.7,
-      envMapIntensity: 1.5
-    });
-    const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    floor.rotation.x = -Math.PI / 2;
-    floor.receiveShadow = true;
-    scene.add(floor);
+  // Industrial metal floor with panels - BRIGHTER
+  const floorGeometry = new THREE.PlaneGeometry(120, 120, 40, 40);
+  const floorMaterial = new THREE.MeshStandardMaterial({
+    color: 0x4a4a5a, // Gray instead of near-black is better for visibility
+    roughness: 0.5,
+    metalness: 0.7,
+    envMapIntensity: 1.5
+  });
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
 
-    // Glowing grid lines (orange/warning style) - BRIGHTER
-    const gridHelper = new THREE.GridHelper(120, 60, 0xffaa00, 0x443300);
-    gridHelper.position.y = 0.02;
-    scene.add(gridHelper);
+  // Glowing grid lines (orange/warning style) - BRIGHTER
+  const gridHelper = new THREE.GridHelper(120, 60, 0xffaa00, 0x443300);
+  gridHelper.position.y = 0.02;
+  scene.add(gridHelper);
 
-    // Arena boundary walls
-    createArenaBoundaries();
+  // Arena boundary walls
+  createArenaBoundaries();
 
-    // Industrial backdrop
-    createIndustrialBackdrop();
-  } catch (e) {
-    debugLog('Env Error: ' + e.message);
-    console.error(e);
-  }
+  // Industrial backdrop
+  createIndustrialBackdrop();
 }
 
 function createArenaBoundaries() {
@@ -1589,29 +1575,7 @@ function createUI() {
   }
 }
 
-// Debug logger
-function debugLog(msg) {
-  let debug = document.getElementById('debug-log');
-  if (!debug) {
-    debug = document.createElement('div');
-    debug.id = 'debug-log';
-    debug.style.position = 'fixed';
-    debug.style.top = '10px';
-    debug.style.left = '10px';
-    debug.style.color = '#0f0';
-    debug.style.zIndex = '9999';
-    debug.style.pointerEvents = 'none';
-    debug.style.fontSize = '12px';
-    debug.style.fontFamily = 'monospace';
-    debug.style.background = 'rgba(0,0,0,0.5)';
-    document.body.appendChild(debug);
-  }
-  debug.innerHTML += `<div>${msg}</div>`;
-  // Keep last 10 lines
-  const lines = debug.children;
-  if (lines.length > 10) debug.removeChild(lines[0]);
-  console.log(msg);
-}
+// Debug logger removed
 
 // ==================== MOBILE TOUCH HANDLERS ====================
 let lookTouchId = null;
@@ -1624,7 +1588,6 @@ const TAP_MOVE_THRESHOLD = 10; // pixels movement allowed for a tap
 function onTouchStart(event) {
   event.preventDefault();
   if (!gameState.isRunning) {
-    debugLog('Game not running');
     return;
   }
 
@@ -1640,8 +1603,6 @@ function onTouchStart(event) {
 
       // Store time for tap detection
       touchStartTime = Date.now();
-
-      debugLog('Look/Fire touch started');
     }
   }
 }
@@ -1691,7 +1652,6 @@ function onTouchEnd(event) {
       const distDiff = Math.sqrt(Math.pow(touch.clientX - touchStartX, 2) + Math.pow(touch.clientY - touchStartY, 2));
 
       if (timeDiff < TAP_THRESHOLD && distDiff < TAP_MOVE_THRESHOLD) {
-        debugLog('Tap detected - FIRE!');
         onShoot();
       }
 
@@ -1737,7 +1697,6 @@ function onJoystickStart(event) {
     if (joystickTouchId === null) {
       joystickTouchId = touch.identifier;
       joystickActive = true;
-      debugLog('Joystick started: ' + touch.identifier);
 
       // Initial move if they tapped off-center
       updateJoystick(touch.clientX, touch.clientY);
@@ -2046,7 +2005,6 @@ let spawnTimer = 0;
 let spawnInterval = 2;
 
 function startGame() {
-  debugLog('startGame called');
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('gameover-screen').classList.remove('show');
   document.getElementById('hud').classList.remove('hidden');
@@ -2137,78 +2095,59 @@ function spawnRobot() {
 }
 
 // ==================== ANIMATION LOOP ====================
-let hasLoggedAnimate = false;
-let frameCount = 0;
-
 function animate() {
   requestAnimationFrame(animate);
 
-  try {
-    if (!hasLoggedAnimate) {
-      debugLog('Animate loop running (Inside)');
-      hasLoggedAnimate = true;
+  const deltaTime = clock.getDelta();
+
+  // Animate gun (always, even when not running for idle animation)
+  if (gun) {
+    // Gun recoil recovery
+    if (gunRecoil > 0) {
+      gunRecoil *= 0.85;
+      if (gunRecoil < 0.001) gunRecoil = 0;
     }
 
-    // Heartbeat every 60 frames (~1s)
-    frameCount++;
-    if (frameCount % 60 === 0) {
-      // debugLog('Heartbeat ' + frameCount); 
-    }
+    // Apply recoil to gun position
+    gun.position.z = -0.5 + gunRecoil;
+    gun.rotation.x = -gunRecoil * 0.5;
 
-    const deltaTime = clock.getDelta();
-
-    // Animate gun (always, even when not running for idle animation)
-    if (gun) {
-      // Gun recoil recovery
-      if (gunRecoil > 0) {
-        gunRecoil *= 0.85;
-        if (gunRecoil < 0.001) gunRecoil = 0;
-      }
-
-      // Apply recoil to gun position
-      gun.position.z = -0.5 + gunRecoil;
-      gun.rotation.x = -gunRecoil * 0.5;
-
-      // Subtle idle bobbing when game is running
-      if (gameState.isRunning) {
-        const time = Date.now() * 0.001;
-        gun.position.y = -0.25 + Math.sin(time * 2) * 0.005;
-        gun.position.x = 0.3 + Math.cos(time * 1.5) * 0.003;
-      }
-    }
-
+    // Subtle idle bobbing when game is running
     if (gameState.isRunning) {
-      // Update player movement
-      updatePlayerMovement(deltaTime);
+      const time = Date.now() * 0.001;
+      gun.position.y = -0.25 + Math.sin(time * 2) * 0.005;
+      gun.position.x = 0.3 + Math.cos(time * 1.5) * 0.003;
+    }
+  }
 
-      // Spawn timer
-      spawnTimer += deltaTime;
-      if (spawnTimer >= spawnInterval) {
-        spawnRobot();
-        spawnTimer = 0;
-      }
+  if (gameState.isRunning) {
+    // Update player movement
+    updatePlayerMovement(deltaTime);
 
-      // Update robots
-      for (const robot of robots) {
-        robot.update(deltaTime);
-      }
-      robots = robots.filter(r => r.alive);
-
-      // Update particles
-      particles = particles.filter(p => p.update(deltaTime));
-
-      // Update bullet trails
-      bullets = bullets.filter(b => b.update(deltaTime));
-
-      // Update question display
-      updateQuestionDisplay();
+    // Spawn timer
+    spawnTimer += deltaTime;
+    if (spawnTimer >= spawnInterval) {
+      spawnRobot();
+      spawnTimer = 0;
     }
 
-    renderer.render(scene, camera);
-  } catch (e) {
-    if (frameCount % 60 === 0) debugLog('Render Error: ' + e.message);
-    console.error(e);
+    // Update robots
+    for (const robot of robots) {
+      robot.update(deltaTime);
+    }
+    robots = robots.filter(r => r.alive);
+
+    // Update particles
+    particles = particles.filter(p => p.update(deltaTime));
+
+    // Update bullet trails
+    bullets = bullets.filter(b => b.update(deltaTime));
+
+    // Update question display
+    updateQuestionDisplay();
   }
+
+  renderer.render(scene, camera);
 }
 
 // ==================== WINDOW RESIZE ====================
