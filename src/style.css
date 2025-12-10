@@ -114,7 +114,7 @@ canvas {
   text-align: center;
   position: relative;
   z-index: 2;
-  padding: 3rem;
+  padding: 5vmin;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid var(--glass-border);
   box-shadow: 0 0 50px rgba(0, 243, 255, 0.1);
@@ -124,7 +124,7 @@ canvas {
 
 .game-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 5rem;
+  font-size: 10vmin;
   line-height: 1;
   font-weight: 900;
   text-transform: uppercase;
@@ -133,25 +133,25 @@ canvas {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 20px var(--primary));
-  margin-bottom: 0.5rem;
-  letter-spacing: 5px;
+  margin-bottom: 2vmin;
+  letter-spacing: 1vmin;
 }
 
 .subtitle {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.2rem;
+  font-size: 3vmin;
   color: var(--secondary);
   letter-spacing: 0.8em;
-  margin-bottom: 4rem;
+  margin-bottom: 8vmin;
   text-transform: uppercase;
   text-shadow: 0 0 10px var(--secondary);
 }
 
 .start-btn {
   position: relative;
-  padding: 1.5rem 5rem;
+  padding: 3vmin 10vmin;
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
+  font-size: 4vmin;
   font-weight: bold;
   color: #000;
   background: var(--primary);
@@ -215,8 +215,8 @@ canvas {
 /* Top Left: Score & Wave */
 .hud-top-left {
   position: absolute;
-  top: calc(var(--safe-area-top) + 30px);
-  left: calc(var(--safe-area-left) + 40px);
+  top: calc(var(--safe-area-top) + 2vmin);
+  left: calc(var(--safe-area-left) + 2vmin);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -226,21 +226,21 @@ canvas {
   display: flex;
   align-items: center;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.8), transparent);
-  padding: 5px 15px;
-  border-left: 4px solid var(--primary);
-  width: 250px;
+  padding: 1vmin 2vmin;
+  border-left: 0.5vmin solid var(--primary);
+  width: 25vmin;
 }
 
 .stat-label {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.8vmin;
   color: var(--primary);
   margin-right: auto;
 }
 
 .stat-value {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
+  font-size: 3vmin;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 0 10px var(--primary);
@@ -249,10 +249,10 @@ canvas {
 /* Top Center: Question */
 .hud-top-center {
   position: absolute;
-  top: calc(var(--safe-area-top) + 30px);
+  top: calc(var(--safe-area-top) + 2vmin);
   left: 50%;
   transform: translateX(-50%);
-  width: 400px;
+  width: 45vmin;
   text-align: center;
   pointer-events: none;
 }
@@ -268,18 +268,18 @@ canvas {
 
 .question-text {
   font-family: 'Orbitron', sans-serif;
-  font-size: 2.2rem;
+  font-size: 5vmin;
   font-weight: 900;
   color: var(--accent);
   text-shadow: 0 0 20px var(--accent);
-  letter-spacing: 2px;
+  letter-spacing: 0.2vmin;
 }
 
 /* Top Right: Combo */
 .hud-top-right {
   position: absolute;
-  top: calc(var(--safe-area-top) + 30px);
-  right: calc(var(--safe-area-right) + 40px);
+  top: calc(var(--safe-area-top) + 2vmin);
+  right: calc(var(--safe-area-right) + 2vmin);
   text-align: right;
 }
 
@@ -291,11 +291,11 @@ canvas {
 
 .combo-value {
   font-family: 'Orbitron', sans-serif;
-  font-size: 3rem;
+  font-size: 6vmin;
   font-style: italic;
   font-weight: 900;
   color: var(--secondary);
-  text-shadow: 0 0 20px var(--secondary);
+  text-shadow: 0 0 3vmin var(--secondary);
   line-height: 1;
 }
 
@@ -429,10 +429,10 @@ canvas {
 
 .gameover-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 4rem;
+  font-size: 8vmin;
   color: var(--danger);
   text-shadow: 0 0 30px var(--danger);
-  margin-bottom: 2rem;
+  margin-bottom: 4vmin;
 }
 
 .stat-grid {
@@ -457,7 +457,7 @@ canvas {
 
 .final-value {
   font-family: 'Orbitron';
-  font-size: 2rem;
+  font-size: 5vmin;
   font-weight: 700;
   color: #fff;
 }
@@ -466,7 +466,7 @@ canvas {
 .damage-number {
   position: fixed;
   font-family: 'Orbitron';
-  font-size: 2rem;
+  font-size: 5vmin;
   font-weight: 900;
   pointer-events: none;
   z-index: 300;
@@ -556,10 +556,10 @@ canvas {
 
 #joystick-container {
   position: absolute;
-  left: 40px;
-  bottom: 40px;
-  width: 140px;
-  height: 140px;
+  left: 5vmin;
+  bottom: 5vmin;
+  width: 20vmin;
+  height: 20vmin;
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
@@ -568,8 +568,8 @@ canvas {
 
 #joystick-knob {
   position: absolute;
-  width: 60px;
-  height: 60px;
+  width: 8vmin;
+  height: 8vmin;
   background: var(--primary);
   border-radius: 50%;
   box-shadow: 0 0 20px var(--primary);
@@ -653,8 +653,8 @@ canvas {
 
 #mobile-hint span {
   display: block;
-  margin: 5px 0;
+  margin: 1vmin 0;
   color: #fff;
   font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
+  font-size: 4vmin;
 }
