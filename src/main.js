@@ -943,9 +943,9 @@ class Robot {
       opacity: 0
     });
 
-    // HEAD hitbox (top section)
+    // HEAD hitbox (top section) - Slightly larger for easier headshots
     const headHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(0.8, 0.8, 0.8),
+      new THREE.BoxGeometry(1.2, 1.2, 1.2),
       hitboxMaterial
     );
     headHitbox.position.y = 3.5;
@@ -953,9 +953,9 @@ class Robot {
     this.head = headHitbox;
     this.group.add(headHitbox);
 
-    // CHEST hitbox (middle section)
+    // CHEST hitbox (middle section) - Generous size
     const chestHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 1.2, 0.8),
+      new THREE.BoxGeometry(1.6, 1.6, 1.0),
       hitboxMaterial
     );
     chestHitbox.position.y = 2.3;
@@ -963,9 +963,9 @@ class Robot {
     this.body = chestHitbox;
     this.group.add(chestHitbox);
 
-    // KNEE/LEGS hitbox (lower section)
+    // KNEE/LEGS hitbox (lower section) - Larger leg area
     const legHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.0, 1.5, 0.6),
+      new THREE.BoxGeometry(1.4, 2.0, 1.0),
       hitboxMaterial
     );
     legHitbox.position.y = 0.9;
@@ -1929,25 +1929,10 @@ function updateQuestionDisplay() {
     return;
   }
 
-  // 2. Fallback to closest robot
-  let closest = null;
-  let minDist = Infinity;
-  for (const robot of robots) {
-    if (!robot.dying) {
-      // Use distance from camera (player), NOT origin
-      const dist = robot.group.position.distanceTo(camera.position);
-      if (dist < minDist) {
-        minDist = dist;
-        closest = robot;
-      }
-    }
-  }
-
-  if (closest) {
-    display.textContent = closest.question;
-    display.style.color = 'var(--accent)'; // Default color
-    display.style.textShadow = '0 0 20px var(--accent)';
-  }
+  // No robot aimed at
+  display.textContent = 'AIM TO SCAN';
+  display.style.color = 'rgba(255, 255, 255, 0.5)';
+  display.style.textShadow = 'none';
 }
 
 // ==================== AUDIO ====================
