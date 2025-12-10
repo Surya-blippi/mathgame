@@ -43,6 +43,23 @@ function preloadRobotModel() {
   });
 }
 
+function loadFootstepSound() {
+  const loader = new THREE.AudioLoader();
+  loader.load(
+    'footsteps.wav',
+    (buffer) => {
+      footstepBuffer = buffer;
+      console.log('Footstep sound loaded');
+    },
+    (xhr) => {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    },
+    (error) => {
+      console.error('An error happened loading footstep sound', error);
+    }
+  );
+}
+
 // ==================== GAME STATE ====================
 const gameState = {
   score: 0,
@@ -115,9 +132,11 @@ let gunRecoil = 0;
 let laserBeam;
 let muzzleLight;
 
-// Audio
+// ==================== AUDIO SETUP ====================
 let audioContext;
 let gunSoundBuffer = null;
+let footstepBuffer = null;
+let listener;
 
 // Load gun sound
 async function loadGunSound() {
@@ -153,6 +172,10 @@ function init() {
   // Create camera
   camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 2, 0);
+
+  // Create listener
+  listener = new THREE.AudioListener();
+  camera.add(listener);
 
   // Create renderer
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -198,8 +221,9 @@ function init() {
   // Create UI (includes mobile controls)
   createUI();
 
-  // Load gun sound
+  // Load sounds
   loadGunSound();
+  loadFootstepSound();
 
   // Start render loop
   try {
@@ -812,8 +836,20 @@ class Robot {
     this.walkTime = Math.random() * Math.PI * 2;
     this.attackCooldown = 0; // Prevent attack spam
 
-    // Math question
+    // Generate Math question
     this.generateMathQuestion();
+
+    // Sound
+    this.sound = null;
+    if (footstepBuffer && listener) {
+      this.sound = new THREE.PositionalAudio(listener);
+      this.sound.setBuffer(footstepBuffer);
+      this.sound.setRefDistance(10); // Distance where volume starts dropping
+      this.sound.setLoop(true);
+      this.sound.setVolume(1.0);
+      this.group.add(this.sound);
+      this.sound.play();
+    }
 
     // Build robot
     this.build();
@@ -1187,6 +1223,10 @@ class Robot {
       if (this.dyingTimer > 1) {
         this.alive = false;
         scene.remove(this.group);
+        // Stop sound when robot is removed from scene
+        if (this.sound && this.sound.isPlaying) {
+          this.sound.stop();
+        }
       }
       return;
     }
@@ -2129,6 +2169,9 @@ function startGame() {
 
   // Clear existing robots and pickups
   for (const robot of robots) {
+    if (robot.sound && robot.sound.isPlaying) {
+      robot.sound.stop();
+    }
     scene.remove(robot.group);
   }
   for (const pickup of pickups) {
