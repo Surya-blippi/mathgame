@@ -193,16 +193,28 @@ function init() {
   }
 
   // Create gun
-  createGun();
+  debugLog('Creating Gun...');
+  try {
+    createGun();
+    debugLog('Gun created');
+  } catch (e) { debugLog('Gun Error: ' + e.message); }
 
   // Create UI (includes mobile controls)
+  debugLog('Creating UI...');
   createUI();
+  debugLog('UI Created');
 
-  // Load gun sound (async, will use fallback if not available)
+  // Load gun sound
   loadGunSound();
 
-  // Start render loop (even before game starts, for background)
-  animate();
+  // Start render loop
+  debugLog('Starting Animate Loop...');
+  try {
+    animate();
+    debugLog('Animate invoked');
+  } catch (e) {
+    debugLog('Animate Call Fail: ' + e.message);
+  }
 }
 
 // ==================== ENVIRONMENT ====================
@@ -2123,64 +2135,77 @@ function spawnRobot() {
 
 // ==================== ANIMATION LOOP ====================
 let hasLoggedAnimate = false;
+let frameCount = 0;
+
 function animate() {
   requestAnimationFrame(animate);
 
-  if (!hasLoggedAnimate) {
-    debugLog('Animate loop started');
-    hasLoggedAnimate = true;
-  }
-
-  const deltaTime = clock.getDelta();
-
-  // Animate gun (always, even when not running for idle animation)
-  if (gun) {
-    // Gun recoil recovery
-    if (gunRecoil > 0) {
-      gunRecoil *= 0.85;
-      if (gunRecoil < 0.001) gunRecoil = 0;
+  try {
+    if (!hasLoggedAnimate) {
+      debugLog('Animate loop running (Inside)');
+      hasLoggedAnimate = true;
     }
 
-    // Apply recoil to gun position
-    gun.position.z = -0.5 + gunRecoil;
-    gun.rotation.x = -gunRecoil * 0.5;
+    // Heartbeat every 60 frames (~1s)
+    frameCount++;
+    if (frameCount % 60 === 0) {
+      // debugLog('Heartbeat ' + frameCount); 
+    }
 
-    // Subtle idle bobbing when game is running
+    const deltaTime = clock.getDelta();
+
+    // Animate gun (always, even when not running for idle animation)
+    if (gun) {
+      // Gun recoil recovery
+      if (gunRecoil > 0) {
+        gunRecoil *= 0.85;
+        if (gunRecoil < 0.001) gunRecoil = 0;
+      }
+
+      // Apply recoil to gun position
+      gun.position.z = -0.5 + gunRecoil;
+      gun.rotation.x = -gunRecoil * 0.5;
+
+      // Subtle idle bobbing when game is running
+      if (gameState.isRunning) {
+        const time = Date.now() * 0.001;
+        gun.position.y = -0.25 + Math.sin(time * 2) * 0.005;
+        gun.position.x = 0.3 + Math.cos(time * 1.5) * 0.003;
+      }
+    }
+
     if (gameState.isRunning) {
-      const time = Date.now() * 0.001;
-      gun.position.y = -0.25 + Math.sin(time * 2) * 0.005;
-      gun.position.x = 0.3 + Math.cos(time * 1.5) * 0.003;
+      // Update player movement
+      updatePlayerMovement(deltaTime);
+
+      // Spawn timer
+      spawnTimer += deltaTime;
+      if (spawnTimer >= spawnInterval) {
+        spawnRobot();
+        spawnTimer = 0;
+      }
+
+      // Update robots
+      for (const robot of robots) {
+        robot.update(deltaTime);
+      }
+      robots = robots.filter(r => r.alive);
+
+      // Update particles
+      particles = particles.filter(p => p.update(deltaTime));
+
+      // Update bullet trails
+      bullets = bullets.filter(b => b.update(deltaTime));
+
+      // Update question display
+      updateQuestionDisplay();
     }
+
+    renderer.render(scene, camera);
+  } catch (e) {
+    if (frameCount % 60 === 0) debugLog('Render Error: ' + e.message);
+    console.error(e);
   }
-
-  if (gameState.isRunning) {
-    // Update player movement
-    updatePlayerMovement(deltaTime);
-
-    // Spawn timer
-    spawnTimer += deltaTime;
-    if (spawnTimer >= spawnInterval) {
-      spawnRobot();
-      spawnTimer = 0;
-    }
-
-    // Update robots
-    for (const robot of robots) {
-      robot.update(deltaTime);
-    }
-    robots = robots.filter(r => r.alive);
-
-    // Update particles
-    particles = particles.filter(p => p.update(deltaTime));
-
-    // Update bullet trails
-    bullets = bullets.filter(b => b.update(deltaTime));
-
-    // Update question display
-    updateQuestionDisplay();
-  }
-
-  renderer.render(scene, camera);
 }
 
 // ==================== WINDOW RESIZE ====================
