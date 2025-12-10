@@ -1574,6 +1574,9 @@ function createUI() {
 
   // Mobile touch event listeners
   if (isMobile) {
+    const lookArea = document.getElementById('look-area');
+    const joystickContainer = document.getElementById('joystick-container');
+
     // Touch look controls (Right side of screen)
     lookArea.addEventListener('touchstart', onTouchStart, { passive: false });
     lookArea.addEventListener('touchmove', onTouchMove, { passive: false });
