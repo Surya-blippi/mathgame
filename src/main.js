@@ -775,33 +775,48 @@ class Robot {
     // Stats based on type
     switch (this.type) {
       case 'fast':
-        this.baseSpeed = 4;
+        this.baseSpeed = 3.0;
         this.damage = 10;
         this.scale = 0.85;
         this.color = 0xff4444; // Red tint
         break;
       case 'heavy':
-        this.baseSpeed = 1.5;
+        this.baseSpeed = 1.0;
         this.damage = 25;
         this.scale = 1.3;
         this.color = 0x44ff44; // Green tint
         break;
       default: // normal
-        this.baseSpeed = 2.5;
+        this.baseSpeed = 1.8;
         this.damage = 12;
         this.scale = 1.0;
         this.color = 0x2a2a4a; // Default
     }
 
-    // Position - spawn around player's CURRENT position
+    // Position - spawn mostly in front of player (270 degree arc)
+    // Avoid spawning directly behind
+    const distance = 35 + Math.random() * 15; // Spawn distance
+
+    // Get camera direction (forward)
+    const spawnDir = new THREE.Vector3(0, 0, -1);
+    if (camera) {
+      spawnDir.applyQuaternion(camera.quaternion);
+    }
+    spawnDir.y = 0;
+    spawnDir.normalize();
+
+    // Rotate by random angle between -135 and +135 degrees (leaving 90 deg gap behind)
+    const angleOffset = (Math.random() - 0.5) * (Math.PI * 1.5);
+    spawnDir.applyAxisAngle(new THREE.Vector3(0, 1, 0), angleOffset);
+
+    // Set position
     const playerX = camera ? camera.position.x : 0;
     const playerZ = camera ? camera.position.z : 0;
-    const angle = Math.random() * Math.PI * 2; // Full 360° around player
-    const distance = 35 + Math.random() * 15; // Spawn distance
+
     this.group.position.set(
-      playerX + Math.sin(angle) * distance,
+      playerX + spawnDir.x * distance,
       0,
-      playerZ - Math.cos(angle) * distance
+      playerZ + spawnDir.z * distance
     );
 
     // Keep within arena bounds
@@ -809,7 +824,7 @@ class Robot {
     this.group.position.x = Math.max(-boundaryLimit, Math.min(boundaryLimit, this.group.position.x));
     this.group.position.z = Math.max(-boundaryLimit, Math.min(boundaryLimit, this.group.position.z));
 
-    this.speed = this.baseSpeed + gameState.wave * 0.2;
+    this.speed = this.baseSpeed + gameState.wave * 0.1;
     this.alive = true;
     this.dying = false;
     this.dyingTimer = 0;
