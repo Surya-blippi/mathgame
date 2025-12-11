@@ -1195,9 +1195,9 @@ class Robot {
       opacity: 0
     });
 
-    // HEAD hitbox (top section) - Slightly larger for easier headshots
+    // HEAD hitbox (top section) - Larger for easier headshots
     const headHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 1.2, 1.2),
+      new THREE.BoxGeometry(1.5, 1.5, 1.5), // Increased from 1.2
       hitboxMaterial
     );
     headHitbox.position.y = 3.5;
@@ -1205,12 +1205,12 @@ class Robot {
     this.head = headHitbox;
     this.group.add(headHitbox);
 
-    // CHEST hitbox (middle section) - Generous size
+    // CHEST hitbox (middle section) - Reduced height to prevent overlap
     const chestHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.6, 1.6, 1.0),
+      new THREE.BoxGeometry(1.6, 1.2, 1.0), // Reduced height from 1.6 to 1.2
       hitboxMaterial
     );
-    chestHitbox.position.y = 2.3;
+    chestHitbox.position.y = 2.0; // Lowered from 2.3
     chestHitbox.userData.part = 'chest';
     this.body = chestHitbox;
     this.group.add(chestHitbox);
@@ -1362,7 +1362,7 @@ class Robot {
       '#ff6644',
       '#ff4422'
     );
-    this.headAnswerSprite.scale.set(1.4, 1.1, 1);
+    this.headAnswerSprite.scale.set(1.8, 1.4, 1); // Increased from 1.4, 1.1
     this.headAnswerSprite.position.set(0, 3.8, 0.8);
     this.headAnswerSprite.userData.part = 'head';
     this.headAnswerSprite.renderOrder = 999;
@@ -1377,8 +1377,8 @@ class Robot {
       '#44ff66',
       '#22ff44'
     );
-    this.chestAnswerSprite.scale.set(1.6, 1.2, 1);
-    this.chestAnswerSprite.position.set(0, 2.5, 0.8);
+    this.chestAnswerSprite.scale.set(2.0, 1.5, 1); // Increased from 1.6, 1.2
+    this.chestAnswerSprite.position.set(0, 2.2, 0.8); // Lowered slightly to match bbox
     this.chestAnswerSprite.userData.part = 'chest';
     this.chestAnswerSprite.renderOrder = 999;
     this.group.add(this.chestAnswerSprite);
@@ -1392,7 +1392,7 @@ class Robot {
       '#44aaff',
       '#2288ff'
     );
-    this.kneeAnswerSprite.scale.set(1.2, 0.9, 1);
+    this.kneeAnswerSprite.scale.set(1.5, 1.2, 1); // Increased from 1.2, 0.9
     this.kneeAnswerSprite.position.set(0, 1.0, 0.8);
     this.kneeAnswerSprite.userData.part = 'knee';
     this.kneeAnswerSprite.renderOrder = 999;
