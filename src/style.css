@@ -1074,3 +1074,68 @@ canvas {
     text-align: left;
   }
 }
+
+/* Specific fix for Mobile Landscape (Short screens) */
+@media (max-height: 600px) and (orientation: landscape) {
+  .start-content {
+    transform: scale(0.85);
+    /* Global scale down */
+    transform-origin: center center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .game-title {
+    font-size: 2.5rem;
+    margin-bottom: 0px;
+  }
+
+  .subtitle {
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+  }
+
+  .mode-selection {
+    flex-direction: row;
+    /* Force row layout even on small screens */
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .mode-card {
+    width: 160px;
+    height: 140px;
+    padding: 0.8rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .mode-icon {
+    font-size: 2rem;
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .mode-info {
+    text-align: center;
+  }
+
+  .mode-title {
+    font-size: 1rem;
+  }
+
+  .mode-desc {
+    display: none;
+    /* Hide description to save space */
+  }
+
+  .start-btn {
+    padding: 0.8rem 3rem;
+    font-size: 1.2rem;
+    margin-top: 0;
+  }
+}
