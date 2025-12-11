@@ -48,15 +48,29 @@ body {
   user-select: none;
 }
 
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #000;
+  font-family: Arial, sans-serif;
+  touch-action: none;
+  /* Prevent browser gestures */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
   position: relative;
   overflow: hidden;
+  touch-action: none;
 }
 
 canvas {
   display: block;
+  touch-action: none;
   width: 100% !important;
   height: 100% !important;
 }
@@ -113,28 +127,29 @@ canvas {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: 
-    repeating-linear-gradient(
-      transparent 0, 
-      transparent 50px, 
-      rgba(0, 243, 255, 0.03) 50px, 
-      rgba(0, 243, 255, 0.03) 51px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent 0, 
-      transparent 50px, 
-      rgba(0, 243, 255, 0.03) 50px, 
-      rgba(0, 243, 255, 0.03) 51px
-    );
+  background:
+    repeating-linear-gradient(transparent 0,
+      transparent 50px,
+      rgba(0, 243, 255, 0.03) 50px,
+      rgba(0, 243, 255, 0.03) 51px),
+    repeating-linear-gradient(90deg,
+      transparent 0,
+      transparent 50px,
+      rgba(0, 243, 255, 0.03) 50px,
+      rgba(0, 243, 255, 0.03) 51px);
   transform: perspective(500px) rotateX(60deg) translateY(0);
   animation: gridMove 20s linear infinite;
   pointer-events: none;
 }
 
 @keyframes gridMove {
-  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
-  100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0);
+  }
+
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(50px);
+  }
 }
 
 #start-screen.hidden {
@@ -149,7 +164,7 @@ canvas {
   padding: 4rem 6rem;
   background: rgba(10, 15, 30, 0.7);
   border: 1px solid rgba(0, 243, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     0 0 50px rgba(0, 0, 0, 0.8),
     inset 0 0 100px rgba(0, 243, 255, 0.05);
   backdrop-filter: blur(20px);
@@ -1023,8 +1038,13 @@ canvas {
 }
 
 @keyframes shine {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) rotate(45deg); }
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
 }
 
 /* Responsive for cards */
@@ -1043,7 +1063,7 @@ canvas {
     padding: 1rem;
     height: auto;
   }
-  
+
   .mode-icon {
     font-size: 2rem;
     margin-bottom: 0;

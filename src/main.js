@@ -166,6 +166,12 @@ function init() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  // Mobile Performance Optimization: Reduce shadow map resolution
+  if (isMobile) {
+    renderer.shadowMap.enabled = false; // Disable shadows on mobile for max FPS
+  }
+
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1;
   document.getElementById('app').appendChild(renderer.domElement);
@@ -1612,7 +1618,10 @@ class ExplosionParticle {
 }
 
 function createExplosion(position, color, count = 30) {
-  for (let i = 0; i < count; i++) {
+  // Reduce particle count on mobile for performance
+  const actualCount = isMobile ? Math.floor(count / 2) : count;
+
+  for (let i = 0; i < actualCount; i++) {
     particles.push(new ExplosionParticle(position, color));
   }
 }
