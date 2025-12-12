@@ -1455,7 +1455,22 @@ class Robot {
 
       if (this.dyingTimer > 1) {
         this.alive = false;
-        scene.remove(this.group);
+        // Clean up memory
+        if (this.group) {
+          this.group.traverse((child) => {
+            if (child.isMesh) {
+              if (child.geometry) child.geometry.dispose();
+              if (child.material) {
+                if (Array.isArray(child.material)) {
+                  child.material.forEach(m => m.dispose());
+                } else {
+                  child.material.dispose();
+                }
+              }
+            }
+          });
+          scene.remove(this.group);
+        }
       }
       return;
     }
@@ -1609,11 +1624,29 @@ class ExplosionParticle {
     this.mesh.material.opacity = this.life;
     this.mesh.scale.setScalar(this.life);
 
+    scene.add(this.mesh);
+  }
+
+  update(deltaTime) {
+    this.mesh.position.add(this.velocity.clone().multiplyScalar(deltaTime));
+    this.velocity.y -= 15 * deltaTime; // Gravity
+    this.life -= this.decay * deltaTime;
+    this.mesh.material.opacity = this.life;
+    this.mesh.scale.setScalar(this.life);
+
     if (this.life <= 0) {
-      scene.remove(this.mesh);
+      this.dispose();
       return false;
     }
     return true;
+  }
+
+  dispose() {
+    if (this.mesh) {
+      if (this.mesh.geometry) this.mesh.geometry.dispose();
+      if (this.mesh.material) this.mesh.material.dispose();
+      scene.remove(this.mesh);
+    }
   }
 }
 
@@ -1652,10 +1685,18 @@ class BulletTrail {
     this.line.material.opacity = this.life / 0.2;
 
     if (this.life <= 0) {
-      scene.remove(this.line);
+      this.dispose();
       return false;
     }
     return true;
+  }
+
+  dispose() {
+    if (this.line) {
+      if (this.line.geometry) this.line.geometry.dispose();
+      if (this.line.material) this.line.material.dispose();
+      scene.remove(this.line);
+    }
   }
 }
 
@@ -1725,7 +1766,15 @@ class HealthPickup {
   }
 
   remove() {
-    scene.remove(this.mesh);
+    if (this.mesh) {
+      this.mesh.traverse((child) => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) child.material.dispose();
+        }
+      });
+      scene.remove(this.mesh);
+    }
   }
 }
 
@@ -2039,6 +2088,7 @@ function createUI() {
     joystickContainer.addEventListener('touchstart', onJoystickStart, { passive: false });
     joystickContainer.addEventListener('touchmove', onJoystickMove, { passive: false });
     joystickContainer.addEventListener('touchend', onJoystickEnd, { passive: false });
+    joystickContainer.addEventListener('touchcancel', onJoystickEnd, { passive: false });
   }
 }
 
@@ -2224,6 +2274,16 @@ function onJoystickEnd(event) {
       break;
     }
   }
+
+  // Failsafe: if no touches left, reset joystick
+  if (event.touches.length === 0) {
+    joystickTouchId = null;
+    joystickActive = false;
+    joystickX = 0;
+    joystickY = 0;
+    const knob = document.getElementById('joystick-knob');
+    if (knob) knob.style.transform = 'translate(0px, 0px)';
+  }
 }
 
 // Jump button handlers
@@ -2333,7 +2393,13 @@ function updateQuestionDisplay() {
   display.style.textShadow = 'none';
 }
 
+// Throttling Threat Indicator (optimuzation)
+let threatUpdateFrame = 0;
+
 function updateThreatIndicator() {
+  threatUpdateFrame++;
+  if (threatUpdateFrame % 10 !== 0) return; // Only run every 10 frames
+
   const indicator = document.getElementById('threat-indicator');
   const arrow = indicator.querySelector('.threat-arrow');
 
