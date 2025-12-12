@@ -1830,7 +1830,10 @@ function createUI() {
   // Mobile Hint
   const mobileHint = document.createElement('div');
   mobileHint.id = 'mobile-hint';
-  mobileHint.innerHTML = '<span>🕹️ Use LEFT stick to Move</span><span>👆 Drag RIGHT side to Look</span><span>💥 Tap RIGHT side to Shoot</span>';
+  mobileHint.innerHTML =
+    '<span>🕹️ Move with joystick</span>' +
+    '<span>💥 Tap to shoot the right answer</span>' +
+    '<span>⚡ Be quick and correct!</span>';
   app.appendChild(mobileHint);
 
   // Orientation Warning
