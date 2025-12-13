@@ -2152,119 +2152,180 @@ function createUI() {
     }
   }
 
-  // Convert canvas to blob
-  function canvasToBlob(canvas) {
-    return new Promise(resolve => {
-      canvas.toBlob(resolve, 'image/png');
-    });
+  // Shared blob cache
+  let cachedShareBlob = null;
+  let isGeneratingScreenshot = false;
+
+  // Pre-generate screenshot when game over screen appears
+  async function preGenerateScreenshot() {
+    if (cachedShareBlob || isGeneratingScreenshot) return;
+    isGeneratingScreenshot = true;
+
+    // Update DOM elements for the screenshot
+    document.getElementById('share-score').textContent = gameState.score;
+    document.getElementById('share-wave').textContent = gameState.wave;
+    document.getElementById('share-kills').textContent = gameState.kills;
+
+    try {
+      const canvas = await captureScreenshot(true); // true = hidden capture
+      if (canvas) {
+        cachedShareBlob = await canvasToBlob(canvas);
+      }
+    } catch (e) {
+      console.warn('Pre-generation failed', e);
+    } finally {
+      isGeneratingScreenshot = false;
+    }
+  }
+
+  // Modified capture to use cache if available or generate new
+  async function getShareBlob() {
+    if (cachedShareBlob) return cachedShareBlob;
+
+    // If currently generating, wait a bit
+    if (isGeneratingScreenshot) {
+      while (isGeneratingScreenshot) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      if (cachedShareBlob) return cachedShareBlob;
+    }
+
+    // Generate fresh
+    const canvas = await captureScreenshot();
+    if (canvas) {
+      return await canvasToBlob(canvas);
+    }
+    return null;
+  }
+
+  // Helper: Set button loading state
+  function setButtonLoading(btn, isLoading) {
+    if (isLoading) {
+      btn.dataset.originalHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="share-icon spinner">⏳</span>'; // Simple spinner
+      btn.disabled = true;
+    } else {
+      btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
+      btn.disabled = false;
+    }
   }
 
   // Download screenshot
-  function downloadScreenshot(canvas, filename = 'learnfire-score.png') {
+  function downloadScreenshot(blob, filename = 'learnfire-score.png') {
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = filename;
-    link.href = canvas.toDataURL('image/png');
+    link.href = url;
     link.click();
+    URL.revokeObjectURL(url);
   }
 
-  // Twitter/X Share (download image + open tweet)
-  document.getElementById('share-twitter').addEventListener('click', async () => {
-    const canvas = await captureScreenshot();
-    if (canvas) {
-      downloadScreenshot(canvas);
-      // After download, open Twitter with text
-      setTimeout(() => {
-        const text = encodeURIComponent('🔥 Check out my score in Learn Fire! Can you beat it? 🎮');
-        const url = encodeURIComponent(GAME_URL);
-        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
-      }, 500);
-    }
-  });
+  // WhatsApp Share
+  document.getElementById('share-whatsapp').addEventListener('click', async function () {
+    const btn = this;
+    setButtonLoading(btn, true);
 
-  // WhatsApp Share (download image + open app)
-  document.getElementById('share-whatsapp').addEventListener('click', async () => {
-    const canvas = await captureScreenshot();
-    if (canvas) {
-      downloadScreenshot(canvas);
-      // Open WhatsApp after download
-      setTimeout(() => {
-        const text = encodeURIComponent(getShareText());
-        if (isMobile) {
-          // Try to open WhatsApp App directly
-          window.location.href = `whatsapp://send?text=${text}`;
-        } else {
-          // Desktop web fallback
-          window.open(`https://wa.me/?text=${text}`, '_blank');
-        }
-      }, 500);
-    }
-  });
+    try {
+      const text = getShareText();
 
-  // Instagram Share (via Native Share on mobile)
-  const instagramBtn = document.getElementById('share-instagram');
-  if (instagramBtn) {
-    instagramBtn.addEventListener('click', async () => {
-      const canvas = await captureScreenshot();
-      if (!canvas) return;
-
-      const blob = await canvasToBlob(canvas);
-      const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
-
-      // Try native sharing first (works best for Instagram Stories on mobile)
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
+      // Try native share with image first (modern mobile browsers)
+      const blob = await getShareBlob();
+      if (blob) {
+        const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file], text })) {
           await navigator.share({
             files: [file],
-            title: 'Learn Fire Score',
-            text: getShareText()
+            text: text,
+            title: 'My Score'
           });
-        } catch (err) {
-          console.log('Share cancelled or failed:', err);
+          setButtonLoading(btn, false);
+          return;
         }
-      } else {
-        // Fallback: Download and prompt user
-        downloadScreenshot(canvas);
+      }
+
+      // Fallback to text intent
+      setTimeout(() => {
         if (isMobile) {
-          alert('Image saved! Open Instagram and share to Story.');
+          window.location.href = `whatsapp://send?text=${encodeURIComponent(text)}`;
         } else {
-          alert('Image saved! You can now post it to Instagram.');
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        setButtonLoading(btn, false);
+      }, 300);
+
+    } catch (e) {
+      console.error(e);
+      setButtonLoading(btn, false);
+    }
+  });
+
+  // Instagram Share
+  document.getElementById('share-instagram').addEventListener('click', async function () {
+    const btn = this;
+    setButtonLoading(btn, true);
+
+    try {
+      const blob = await getShareBlob();
+      if (!blob) throw new Error('Failed to generate image');
+
+      const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Learn Fire Score',
+        });
+      } else {
+        // Fallback
+        downloadScreenshot(blob);
+        alert('Image saved! open Instagram to share.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Could not share image.');
+    } finally {
+      setButtonLoading(btn, false);
+    }
+  });
+
+  // Twitter Share (Text only, most reliable)
+  document.getElementById('share-twitter').addEventListener('click', async function () {
+    const text = encodeURIComponent('🔥 Check out my score in Learn Fire! Can you beat it? 🎮');
+    const url = encodeURIComponent(GAME_URL);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  });
+
+  // Native Share (Generic)
+  document.getElementById('share-native').addEventListener('click', async function () {
+    const btn = this;
+    setButtonLoading(btn, true);
+
+    try {
+      const blob = await getShareBlob();
+      const shareData = {
+        title: 'Learn Fire',
+        text: getShareText(),
+        url: GAME_URL
+      };
+
+      if (blob) {
+        const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          shareData.files = [file];
         }
       }
-    });
-  }
 
-  // Native Share (with image file on supported devices)
-  document.getElementById('share-native').addEventListener('click', async () => {
-    const canvas = await captureScreenshot();
-    if (!canvas) return;
-
-    const blob = await canvasToBlob(canvas);
-    const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({
-          title: 'Learn Fire - My Score',
-          text: getShareText(),
-          files: [file]
-        });
-      } catch (err) {
-        console.log('Share cancelled');
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Copy to clipboard as fallback
+        await navigator.clipboard.writeText(getShareText());
+        alert('Score copied to clipboard!');
       }
-    } else if (navigator.share) {
-      // Fallback to text-only share
-      try {
-        await navigator.share({
-          title: 'Learn Fire - My Score',
-          text: getShareText(),
-          url: GAME_URL
-        });
-      } catch (err) {
-        console.log('Share cancelled');
-      }
-    } else {
-      // Final fallback - download
-      downloadScreenshot(canvas);
+    } catch (e) {
+      console.warn('Share failed', e);
+    } finally {
+      setButtonLoading(btn, false);
     }
   });
 
@@ -2476,6 +2537,9 @@ function showFinalGameOver() {
   document.getElementById('final-score').textContent = gameState.score;
   document.getElementById('final-waves').textContent = gameState.wave;
   document.getElementById('final-kills').textContent = gameState.kills;
+
+  // Start pre-generating the screenshot immediately
+  preGenerateScreenshot();
 }
 
 function showReviveModal() {
