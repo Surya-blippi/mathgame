@@ -937,10 +937,15 @@ canvas {
 .gameover-box {
   background: rgba(20, 10, 10, 0.8);
   border: 2px solid var(--danger);
-  padding: 3rem 5rem;
+  padding: 2rem 1.5rem;
   text-align: center;
-  clip-path: polygon(30px 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%, 0 30px);
+  border-radius: 15px;
   box-shadow: 0 0 100px rgba(255, 42, 42, 0.3);
+  max-width: min(500px, 92vw);
+  width: 92vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .gameover-title {
@@ -954,8 +959,8 @@ canvas {
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-bottom: 3rem;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
 }
 
 .final-stat-box {
@@ -1759,13 +1764,17 @@ canvas {
 .revive-content {
   background: rgba(20, 10, 10, 0.9);
   border: 2px solid var(--danger);
-  padding: 3rem 4rem;
+  padding: 2rem;
   text-align: center;
   border-radius: 15px;
   box-shadow:
     0 0 80px rgba(255, 42, 42, 0.4),
     inset 0 0 50px rgba(255, 42, 42, 0.1);
-  max-width: 450px;
+  max-width: min(450px, 90vw);
+  width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .revive-skull {
@@ -2068,6 +2077,96 @@ canvas {
     width: 280px;
     height: 50px;
     bottom: 10px;
+  }
+}
+
+/* Extra small screens (very small phones) */
+@media (max-width: 480px) {
+  .gameover-box {
+    padding: 1rem 0.8rem;
+  }
+
+  .gameover-title {
+    font-size: 5vmin;
+    margin-bottom: 2vmin;
+  }
+
+  .stat-grid {
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .final-stat-box {
+    padding: 0.4rem;
+  }
+
+  .final-label {
+    font-size: 0.55rem;
+  }
+
+  .final-value {
+    font-size: 3.5vmin;
+  }
+
+  .share-section {
+    margin: 0.8rem 0;
+    padding: 0.8rem;
+  }
+
+  .share-label {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+  }
+
+  .share-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .share-icon {
+    font-size: 0.9rem;
+  }
+
+  .revive-content {
+    padding: 1rem 0.8rem;
+  }
+
+  .revive-skull {
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .revive-title {
+    font-size: 1.2rem;
+  }
+
+  .revive-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .revive-reward {
+    padding: 0.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .revive-reward p {
+    font-size: 0.75rem;
+  }
+
+  #revive-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  #give-up-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .wave-transition-text {
+    font-size: 1rem;
+    letter-spacing: 1px;
   }
 }
 
