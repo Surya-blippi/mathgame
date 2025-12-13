@@ -2078,25 +2078,92 @@ function createUI() {
     const score = document.getElementById('final-score').textContent;
     const wave = document.getElementById('final-waves').textContent;
     const kills = document.getElementById('final-kills').textContent;
-    return `🔥 I scored ${score} points, reached wave ${wave}, and got ${kills} kills in Learn Fire! Can you beat my score? 🎮`;
+    return `🔥 I scored ${score} points, reached wave ${wave}, and got ${kills} kills in Learn Fire! Can you beat my score? 🎮\n${GAME_URL}`;
   }
 
-  // Twitter/X Share
-  document.getElementById('share-twitter').addEventListener('click', () => {
-    const text = encodeURIComponent(getShareText());
-    const url = encodeURIComponent(GAME_URL);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
+  // Capture screenshot of game over screen
+  async function captureScreenshot() {
+    const gameoverBox = document.querySelector('.gameover-box');
+    if (!gameoverBox || typeof html2canvas === 'undefined') {
+      console.error('Cannot capture screenshot');
+      return null;
+    }
+
+    try {
+      const canvas = await html2canvas(gameoverBox, {
+        backgroundColor: '#0a0a1a',
+        scale: 2, // Higher quality
+        logging: false
+      });
+      return canvas;
+    } catch (err) {
+      console.error('Screenshot failed:', err);
+      return null;
+    }
+  }
+
+  // Convert canvas to blob
+  function canvasToBlob(canvas) {
+    return new Promise(resolve => {
+      canvas.toBlob(resolve, 'image/png');
+    });
+  }
+
+  // Download screenshot
+  function downloadScreenshot(canvas, filename = 'learnfire-score.png') {
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // Twitter/X Share (download image + open tweet)
+  document.getElementById('share-twitter').addEventListener('click', async () => {
+    const canvas = await captureScreenshot();
+    if (canvas) {
+      downloadScreenshot(canvas);
+      // After download, open Twitter with text
+      setTimeout(() => {
+        const text = encodeURIComponent('🔥 Check out my score in Learn Fire! Can you beat it? 🎮');
+        const url = encodeURIComponent(GAME_URL);
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
+      }, 500);
+    }
   });
 
-  // WhatsApp Share
-  document.getElementById('share-whatsapp').addEventListener('click', () => {
-    const text = encodeURIComponent(getShareText() + '\n' + GAME_URL);
-    window.open(`https://wa.me/?text=${text}`, '_blank');
+  // WhatsApp Share (download image for attachment)
+  document.getElementById('share-whatsapp').addEventListener('click', async () => {
+    const canvas = await captureScreenshot();
+    if (canvas) {
+      downloadScreenshot(canvas);
+      // Open WhatsApp after download
+      setTimeout(() => {
+        const text = encodeURIComponent(getShareText());
+        window.open(`https://wa.me/?text=${text}`, '_blank');
+      }, 500);
+    }
   });
 
-  // Native Share (mobile friendly)
+  // Native Share (with image file on supported devices)
   document.getElementById('share-native').addEventListener('click', async () => {
-    if (navigator.share) {
+    const canvas = await captureScreenshot();
+    if (!canvas) return;
+
+    const blob = await canvasToBlob(canvas);
+    const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: 'Learn Fire - My Score',
+          text: getShareText(),
+          files: [file]
+        });
+      } catch (err) {
+        console.log('Share cancelled');
+      }
+    } else if (navigator.share) {
+      // Fallback to text-only share
       try {
         await navigator.share({
           title: 'Learn Fire - My Score',
@@ -2107,26 +2174,29 @@ function createUI() {
         console.log('Share cancelled');
       }
     } else {
-      // Fallback - just copy to clipboard
-      document.getElementById('share-copy').click();
+      // Final fallback - download
+      downloadScreenshot(canvas);
     }
   });
 
-  // Copy to Clipboard
+  // Download Screenshot directly
   document.getElementById('share-copy').addEventListener('click', async () => {
-    const text = getShareText() + '\n' + GAME_URL;
-    try {
-      await navigator.clipboard.writeText(text);
-      const btn = document.getElementById('share-copy');
-      const originalIcon = btn.innerHTML;
+    const btn = document.getElementById('share-copy');
+    const originalIcon = btn.innerHTML;
+
+    btn.innerHTML = '<span class="share-icon">⏳</span>';
+
+    const canvas = await captureScreenshot();
+    if (canvas) {
+      downloadScreenshot(canvas);
       btn.innerHTML = '<span class="share-icon">✓</span>';
       btn.classList.add('copied');
       setTimeout(() => {
         btn.innerHTML = originalIcon;
         btn.classList.remove('copied');
       }, 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    } else {
+      btn.innerHTML = originalIcon;
     }
   });
 
