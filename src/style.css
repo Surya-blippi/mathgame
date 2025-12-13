@@ -1975,34 +1975,99 @@ canvas {
 /* Mobile adjustments for ad UI */
 @media (max-width: 768px) {
 
-  .ad-content,
-  .revive-content {
-    padding: 2rem;
-    margin: 20px;
-    max-width: 90%;
+  /* Revive Modal - Mobile */
+  #revive-modal {
+    padding: 1rem;
+    overflow-y: auto;
   }
 
-  .revive-title {
-    font-size: 2rem;
+  .revive-content {
+    padding: 1.5rem 1rem;
+    margin: 10px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
   }
 
   .revive-skull {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
   }
 
+  .revive-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .revive-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .revive-reward {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .revive-reward p {
+    font-size: 0.85rem;
+  }
+
+  .revive-buttons {
+    gap: 0.8rem;
+  }
+
+  #revive-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+
+  #give-up-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  /* Wave Ad Overlay - Mobile */
+  #wave-ad-overlay {
+    padding: 1rem;
+  }
+
+  .wave-transition-text {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .ad-content {
+    padding: 1.5rem;
+    margin: 10px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  /* Extra Life Button - Mobile */
   #extra-life-btn {
-    bottom: calc(var(--safe-area-bottom) + 130px);
+    bottom: calc(var(--safe-area-bottom) + 100px);
     left: 50%;
     transform: translateX(-50%);
+    padding: 0.6rem 1rem;
+    font-size: 0.75rem;
   }
 
   #extra-life-btn.show {
     transform: translateX(-50%) translateY(0);
   }
 
+  /* Banner Ad - Mobile */
   #banner-ad-container {
     width: 280px;
     height: 50px;
+    bottom: 10px;
   }
 }
 
