@@ -1040,6 +1040,11 @@ canvas {
   border-color: #25D366;
 }
 
+.share-instagram:hover {
+  background: #E1306C;
+  border-color: #E1306C;
+}
+
 .share-native:hover {
   background: var(--primary);
   border-color: var(--primary);

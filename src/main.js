@@ -2000,6 +2000,9 @@ function createUI() {
           <button class="share-btn share-twitter" id="share-twitter" title="Share on X/Twitter">
             <span class="share-icon">𝕏</span>
           </button>
+          <button class="share-btn share-instagram" id="share-instagram" title="Share on Instagram">
+            <span class="share-icon">📸</span>
+          </button>
           <button class="share-btn share-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
             <span class="share-icon">📱</span>
           </button>
@@ -2180,7 +2183,7 @@ function createUI() {
     }
   });
 
-  // WhatsApp Share (download image for attachment)
+  // WhatsApp Share (download image + open app)
   document.getElementById('share-whatsapp').addEventListener('click', async () => {
     const canvas = await captureScreenshot();
     if (canvas) {
@@ -2188,10 +2191,49 @@ function createUI() {
       // Open WhatsApp after download
       setTimeout(() => {
         const text = encodeURIComponent(getShareText());
-        window.open(`https://wa.me/?text=${text}`, '_blank');
+        if (isMobile) {
+          // Try to open WhatsApp App directly
+          window.location.href = `whatsapp://send?text=${text}`;
+        } else {
+          // Desktop web fallback
+          window.open(`https://wa.me/?text=${text}`, '_blank');
+        }
       }, 500);
     }
   });
+
+  // Instagram Share (via Native Share on mobile)
+  const instagramBtn = document.getElementById('share-instagram');
+  if (instagramBtn) {
+    instagramBtn.addEventListener('click', async () => {
+      const canvas = await captureScreenshot();
+      if (!canvas) return;
+
+      const blob = await canvasToBlob(canvas);
+      const file = new File([blob], 'learnfire-score.png', { type: 'image/png' });
+
+      // Try native sharing first (works best for Instagram Stories on mobile)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Learn Fire Score',
+            text: getShareText()
+          });
+        } catch (err) {
+          console.log('Share cancelled or failed:', err);
+        }
+      } else {
+        // Fallback: Download and prompt user
+        downloadScreenshot(canvas);
+        if (isMobile) {
+          alert('Image saved! Open Instagram and share to Story.');
+        } else {
+          alert('Image saved! You can now post it to Instagram.');
+        }
+      }
+    });
+  }
 
   // Native Share (with image file on supported devices)
   document.getElementById('share-native').addEventListener('click', async () => {
