@@ -1037,6 +1037,15 @@ canvas {
 
 .share-icon {
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
 .share-btn:hover {
