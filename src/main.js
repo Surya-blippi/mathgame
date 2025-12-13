@@ -1997,20 +1997,18 @@ function createUI() {
       <div class="share-section">
         <p class="share-label">SHARE YOUR SCORE</p>
         <div class="share-buttons">
-          <button class="share-btn share-twitter" id="share-twitter" title="Share on X/Twitter">
-            <span class="share-icon">𝕏</span>
+        <div class="share-buttons">
+          <button class="share-btn share-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
+            <span class="share-icon">📱</span>
           </button>
           <button class="share-btn share-instagram" id="share-instagram" title="Share on Instagram">
             <span class="share-icon">📸</span>
           </button>
-          <button class="share-btn share-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
-            <span class="share-icon">📱</span>
+          <button class="share-btn share-twitter" id="share-twitter" title="Share on X/Twitter">
+            <span class="share-icon">𝕏</span>
           </button>
-          <button class="share-btn share-native" id="share-native" title="Share">
+          <button class="share-btn share-native" id="share-native" title="More Options">
             <span class="share-icon">📤</span>
-          </button>
-          <button class="share-btn share-copy" id="share-copy" title="Copy to clipboard">
-            <span class="share-icon">📋</span>
           </button>
         </div>
       </div>
@@ -2270,26 +2268,7 @@ function createUI() {
     }
   });
 
-  // Download Screenshot directly
-  document.getElementById('share-copy').addEventListener('click', async () => {
-    const btn = document.getElementById('share-copy');
-    const originalIcon = btn.innerHTML;
 
-    btn.innerHTML = '<span class="share-icon">⏳</span>';
-
-    const canvas = await captureScreenshot();
-    if (canvas) {
-      downloadScreenshot(canvas);
-      btn.innerHTML = '<span class="share-icon">✓</span>';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.innerHTML = originalIcon;
-        btn.classList.remove('copied');
-      }, 2000);
-    } else {
-      btn.innerHTML = originalIcon;
-    }
-  });
 
   // Select all mode cards
   const modeCards = document.querySelectorAll('.mode-card');
