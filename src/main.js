@@ -2017,6 +2017,40 @@ function createUI() {
   `;
   app.appendChild(gameoverScreen);
 
+  // Custom Share Card (hidden, used for screenshot)
+  const shareCard = document.createElement('div');
+  shareCard.id = 'share-card';
+  shareCard.innerHTML = `
+    <div class="share-card-inner">
+      <div class="share-card-header">
+        <span class="share-card-logo">🔥</span>
+        <h1 class="share-card-title">LEARN<span>FIRE</span></h1>
+      </div>
+      <div class="share-card-score">
+        <span class="share-score-label">MY SCORE</span>
+        <span class="share-score-value" id="share-score">0</span>
+      </div>
+      <div class="share-card-stats">
+        <div class="share-stat">
+          <span class="share-stat-value" id="share-wave">0</span>
+          <span class="share-stat-label">WAVES</span>
+        </div>
+        <div class="share-stat">
+          <span class="share-stat-value" id="share-kills">0</span>
+          <span class="share-stat-label">KILLS</span>
+        </div>
+      </div>
+      <div class="share-card-cta">
+        <span class="share-cta-text">🎮 CAN YOU BEAT MY SCORE?</span>
+      </div>
+      <div class="share-card-footer">
+        <span class="share-website">▶ PLAY NOW AT</span>
+        <span class="share-url">LEARNFIRE.LIVE</span>
+      </div>
+    </div>
+  `;
+  app.appendChild(shareCard);
+
   // Mobile Controls
   const mobileControls = document.createElement('div');
   mobileControls.id = 'mobile-controls';
@@ -2081,23 +2115,38 @@ function createUI() {
     return `🔥 I scored ${score} points, reached wave ${wave}, and got ${kills} kills in Learn Fire! Can you beat my score? 🎮\n${GAME_URL}`;
   }
 
-  // Capture screenshot of game over screen
+  // Capture screenshot of custom share card
   async function captureScreenshot() {
-    const gameoverBox = document.querySelector('.gameover-box');
-    if (!gameoverBox || typeof html2canvas === 'undefined') {
+    const shareCard = document.getElementById('share-card');
+    if (!shareCard || typeof html2canvas === 'undefined') {
       console.error('Cannot capture screenshot');
       return null;
     }
 
+    // Populate share card with current scores
+    document.getElementById('share-score').textContent = document.getElementById('final-score').textContent;
+    document.getElementById('share-wave').textContent = document.getElementById('final-waves').textContent;
+    document.getElementById('share-kills').textContent = document.getElementById('final-kills').textContent;
+
+    // Make it visible temporarily for capture
+    shareCard.style.position = 'fixed';
+    shareCard.style.left = '-9999px';
+    shareCard.style.top = '0';
+    shareCard.style.display = 'block';
+
     try {
-      const canvas = await html2canvas(gameoverBox, {
+      const canvas = await html2canvas(shareCard.querySelector('.share-card-inner'), {
         backgroundColor: '#0a0a1a',
         scale: 2, // Higher quality
-        logging: false
+        logging: false,
+        width: 400,
+        height: 500
       });
+      shareCard.style.display = 'none';
       return canvas;
     } catch (err) {
       console.error('Screenshot failed:', err);
+      shareCard.style.display = 'none';
       return null;
     }
   }
