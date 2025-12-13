@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import './style.css';
+import { initAds, resetSessionLimits, canShowAd, showRewardedAd, showInterstitialAd, shouldShowWaveAd, getReviveAdCount, getCurrentReviveProgress } from './adManager.js';
 
 // GLTF Model references
 let robotModel = null;
@@ -1521,6 +1522,8 @@ class Robot {
   }
 
   attackPlayer() {
+    if (!gameState.isRunning) return;
+
     // Set cooldown to prevent attack spam
     this.attackCooldown = 1.5;
 
@@ -1539,6 +1542,9 @@ class Robot {
     void app.offsetWidth; // Trigger reflow
     app.classList.add('shake');
     setTimeout(() => app.classList.remove('shake'), 400); // Match CSS animation duration
+
+    // Check if player should be offered extra life (low health)
+    checkExtraLifeOffer();
 
     if (gameState.health <= 0) {
       endGame();
@@ -1993,6 +1999,43 @@ function createUI() {
   `;
   app.appendChild(mobileControls);
 
+  // Revive Modal (shows before game over with ad option)
+  const reviveModal = document.createElement('div');
+  reviveModal.id = 'revive-modal';
+  reviveModal.innerHTML = `
+    <div class="revive-content">
+      <div class="revive-skull">💀</div>
+      <h1 class="revive-title">YOU DIED</h1>
+      <p class="revive-subtitle">Watch 2 short videos to continue your mission</p>
+      <div class="revive-reward">
+        <p>🎁 Continue with 50% HP</p>
+      </div>
+      <div class="revive-buttons">
+        <button id="revive-btn">▶ REVIVE (Watch 2 Ads)</button>
+        <button id="give-up-btn">Give Up</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(reviveModal);
+
+  // Extra Life Button (appears when health is low)
+  const extraLifeBtn = document.createElement('button');
+  extraLifeBtn.id = 'extra-life-btn';
+  extraLifeBtn.className = 'hidden';
+  extraLifeBtn.textContent = '▶ +50 HP';
+  app.appendChild(extraLifeBtn);
+
+  // Wave Ad Overlay (for interstitial ads between waves)
+  const waveAdOverlay = document.createElement('div');
+  waveAdOverlay.id = 'wave-ad-overlay';
+  waveAdOverlay.innerHTML = `<p class="wave-transition-text">WAVE COMPLETE</p>`;
+  app.appendChild(waveAdOverlay);
+
+  // Banner Ad Container (on start screen)
+  const bannerAdContainer = document.createElement('div');
+  bannerAdContainer.id = 'banner-ad-container';
+  document.getElementById('start-screen').appendChild(bannerAdContainer);
+
 
 
   // Event listeners
@@ -2093,6 +2136,194 @@ function createUI() {
     joystickContainer.addEventListener('touchend', onJoystickEnd, { passive: false });
     joystickContainer.addEventListener('touchcancel', onJoystickEnd, { passive: false });
   }
+
+  // ==================== AD SYSTEM EVENT LISTENERS ====================
+  const reviveBtn = document.getElementById('revive-btn');
+  const giveUpBtn = document.getElementById('give-up-btn');
+  const extraLifeButton = document.getElementById('extra-life-btn');
+
+  // Revive button - watch 2 ads to continue
+  reviveBtn.addEventListener('click', attemptRevive);
+  reviveBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    attemptRevive();
+  }, { passive: false });
+
+  // Give up button - proceed to game over
+  giveUpBtn.addEventListener('click', showFinalGameOver);
+  giveUpBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    showFinalGameOver();
+  }, { passive: false });
+
+  // Extra life button - watch 1 ad for +50 HP
+  extraLifeButton.addEventListener('click', claimExtraLife);
+  extraLifeButton.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    claimExtraLife();
+  }, { passive: false });
+
+  // Initialize ad system
+  initAds();
+}
+
+// ==================== AD SYSTEM FUNCTIONS ====================
+
+// Track if extra life offer is currently shown
+let extraLifeOfferShown = false;
+
+function attemptRevive() {
+  const reviveBtn = document.getElementById('revive-btn');
+  reviveBtn.disabled = true;
+  reviveBtn.textContent = 'Loading...';
+
+  // Mute game audio during ads
+  setGameAudioMuted(true);
+
+  showRewardedAd('revive', (result) => {
+    if (result && result.partial) {
+      // Need to watch more ads
+      reviveBtn.disabled = false;
+      reviveBtn.textContent = `▶ REVIVE (Ad ${result.current}/${result.total} done)`;
+      // Automatically trigger next ad
+      setTimeout(() => attemptRevive(), 500);
+    } else {
+      // All ads watched - revive the player!
+      executeRevive();
+    }
+  }, () => {
+    // Ad cancelled/failed
+    reviveBtn.disabled = false;
+    reviveBtn.textContent = '▶ REVIVE (Watch 2 Ads)';
+  });
+}
+
+function executeRevive() {
+  // Hide revive modal
+  document.getElementById('revive-modal').classList.remove('show');
+
+  // Restore player with 50% health
+  gameState.health = Math.floor(gameState.maxHealth * 0.5);
+  updateHealthBar();
+
+  // Resume game
+  gameState.isRunning = true;
+
+  // Show HUD again
+  document.getElementById('hud').classList.remove('hidden');
+  document.getElementById('crosshair').classList.remove('hidden');
+
+  // Show mobile controls if on mobile
+  if (isMobile) {
+    document.getElementById('mobile-controls').classList.add('show');
+  } else {
+    // Re-lock pointer on desktop
+    renderer.domElement.requestPointerLock();
+  }
+
+  // Resume clock
+  clock.start();
+
+  // Unmute and resume music
+  setGameAudioMuted(false);
+  if (bgMusic && bgMusic.paused) {
+    bgMusic.play().catch(() => { });
+  }
+
+  // Show revival message
+  showDamageNumber({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, 'REVIVED!', true);
+
+  console.log('[Game] Player revived with 50% HP');
+}
+
+function showFinalGameOver() {
+  // Ensure game is stopped
+  gameState.isRunning = false;
+
+  // Hide revive modal
+  document.getElementById('revive-modal').classList.remove('show');
+
+  // Show actual game over screen
+  document.getElementById('gameover-screen').classList.add('show');
+  document.getElementById('final-score').textContent = gameState.score;
+  document.getElementById('final-waves').textContent = gameState.wave;
+  document.getElementById('final-kills').textContent = gameState.kills;
+}
+
+function showReviveModal() {
+  // Check if player can revive
+  if (!canShowAd('revive')) {
+    // No revives left - go straight to game over
+    showFinalGameOver();
+    return;
+  }
+
+  // Pause game state but keep it "alive" for potential revive
+  gameState.isRunning = false;
+
+  // Hide HUD
+  document.getElementById('hud').classList.add('hidden');
+  document.getElementById('crosshair').classList.add('hidden');
+
+  // Hide mobile controls
+  if (isMobile) {
+    document.getElementById('mobile-controls').classList.remove('show');
+  }
+
+  // Reset revive button state
+  const reviveBtn = document.getElementById('revive-btn');
+  reviveBtn.disabled = false;
+  reviveBtn.textContent = '▶ REVIVE (Watch 2 Ads)';
+
+  // Show revive modal
+  document.getElementById('revive-modal').classList.add('show');
+}
+
+function claimExtraLife() {
+  const extraLifeBtn = document.getElementById('extra-life-btn');
+  extraLifeBtn.classList.remove('show');
+
+  showRewardedAd('extraLife', () => {
+    // Grant extra health
+    const healAmount = 50;
+    gameState.health = Math.min(gameState.maxHealth, gameState.health + healAmount);
+    updateHealthBar();
+
+    showDamageNumber({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, `+${healAmount} HP!`, true);
+    playSound('pickup');
+
+    // Hide the button permanently for this session
+    extraLifeBtn.classList.add('hidden');
+    extraLifeOfferShown = false;
+
+    console.log('[Game] Extra life claimed, +50 HP');
+  }, () => {
+    // Ad cancelled - show button again
+    extraLifeBtn.classList.add('show');
+  });
+}
+
+function checkExtraLifeOffer() {
+  // Show extra life offer when health drops below 25%
+  const healthPercent = (gameState.health / gameState.maxHealth) * 100;
+
+  if (healthPercent < 25 && healthPercent > 0 && !extraLifeOfferShown && canShowAd('extraLife')) {
+    const extraLifeBtn = document.getElementById('extra-life-btn');
+    extraLifeBtn.classList.remove('hidden');
+    extraLifeBtn.classList.add('show');
+    extraLifeOfferShown = true;
+  }
+}
+
+function showWaveTransitionAd(waveNumber, callback) {
+  const overlay = document.getElementById('wave-ad-overlay');
+  overlay.querySelector('.wave-transition-text').textContent = `WAVE ${waveNumber - 1} COMPLETE`;
+  overlay.classList.add('show');
+
+  showInterstitialAd(() => {
+    overlay.classList.remove('show');
+    if (callback) callback();
+  });
 }
 
 // Debug logger removed
@@ -2107,7 +2338,7 @@ const TAP_MOVE_THRESHOLD = 10; // pixels movement allowed for a tap
 
 function onTouchStart(event) {
   event.preventDefault();
-  if (!gameState.isRunning) {
+  if (!gameState.isRunning || gameState.isPaused) {
     return;
   }
 
@@ -2129,7 +2360,7 @@ function onTouchStart(event) {
 
 function onTouchMove(event) {
   event.preventDefault();
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   for (let i = 0; i < event.changedTouches.length; i++) {
     const touch = event.changedTouches[i];
@@ -2203,7 +2434,7 @@ const joystickMaxDistance = 45; // Larger for bigger joystick
 function onJoystickStart(event) {
   event.preventDefault();
   event.stopPropagation();
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   const container = document.getElementById('joystick-container');
   const rect = container.getBoundingClientRect();
@@ -2228,7 +2459,7 @@ function onJoystickStart(event) {
 function onJoystickMove(event) {
   event.preventDefault();
   event.stopPropagation();
-  if (!gameState.isRunning || !joystickActive) return;
+  if (!gameState.isRunning || gameState.isPaused || !joystickActive) return;
 
   for (let i = 0; i < event.changedTouches.length; i++) {
     const touch = event.changedTouches[i];
@@ -2293,7 +2524,7 @@ function onJoystickEnd(event) {
 function onJumpButtonPress(event) {
   event.preventDefault();
   event.stopPropagation();
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   // Trigger jump if grounded
   if (isGrounded) {
@@ -2514,9 +2745,22 @@ function playSound(type) {
   oscillator.stop(audioContext.currentTime + 0.3);
 }
 
+function setGameAudioMuted(muted) {
+  if (bgMusic) bgMusic.muted = muted;
+  if (walkSound) walkSound.muted = muted;
+
+  if (audioContext) {
+    if (muted) {
+      audioContext.suspend();
+    } else {
+      audioContext.resume();
+    }
+  }
+}
+
 // ==================== SHOOTING ====================
 function onShoot(event) {
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   // Fire the gun with animation
   fireGunAnimation();
@@ -2594,6 +2838,18 @@ function onShoot(event) {
           // Speed up spawns (cap at 0.6s)
           spawnInterval = Math.max(0.6, spawnInterval - 0.2);
           showWaveAnnouncement(gameState.wave);
+
+          // Show interstitial ad every 3 waves (wave 4, 7, 10...)
+          if (shouldShowWaveAd(gameState.wave)) {
+            // Pause game and audio for wave transition ad
+            gameState.isPaused = true;
+            setGameAudioMuted(true);
+
+            showWaveTransitionAd(gameState.wave, () => {
+              gameState.isPaused = false;
+              setGameAudioMuted(false);
+            });
+          }
         }
 
       } else {
@@ -2688,6 +2944,20 @@ function startGame() {
   // Spawn first robot
   robots.push(new Robot());
 
+  // Reset ad session limits for new game
+  resetSessionLimits();
+  extraLifeOfferShown = false;
+
+  // Hide extra life button from previous game
+  const extraLifeBtn = document.getElementById('extra-life-btn');
+  if (extraLifeBtn) {
+    extraLifeBtn.classList.add('hidden');
+    extraLifeBtn.classList.remove('show');
+  }
+
+  // Also hide revive modal in case it's open
+  document.getElementById('revive-modal').classList.remove('show');
+
   showWaveAnnouncement(1);
 
   // Start Background Music
@@ -2713,20 +2983,20 @@ function startGame() {
 }
 
 function endGame() {
+  if (!gameState.isRunning) return;
   gameState.isRunning = false;
 
-  document.getElementById('hud').classList.add('hidden');
-  document.getElementById('crosshair').classList.add('hidden');
-  document.getElementById('gameover-screen').classList.add('show');
-
-  // Hide mobile controls
-  if (isMobile) {
-    document.getElementById('mobile-controls').classList.remove('show');
+  // Stop background music
+  if (bgMusic) {
+    bgMusic.pause();
+  }
+  if (walkSound) {
+    walkSound.pause();
   }
 
-  document.getElementById('final-score').textContent = gameState.score;
-  document.getElementById('final-waves').textContent = gameState.wave;
-  document.getElementById('final-kills').textContent = gameState.kills;
+  // Show revive modal instead of immediate game over
+  // This gives player a chance to watch ads and continue
+  showReviveModal();
 }
 
 function spawnRobot() {
@@ -2826,7 +3096,7 @@ function onWindowResize() {
 
 // ==================== MOUSE CONTROLS ====================
 function onCanvasClick(event) {
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   // If not locked, try to lock
   if (!isPointerLocked) {
@@ -2848,7 +3118,7 @@ function onPointerLockChange() {
 }
 
 function onMouseMove(event) {
-  if (!isPointerLocked || !gameState.isRunning) return;
+  if (!isPointerLocked || !gameState.isRunning || gameState.isPaused) return;
 
   // Get mouse movement
   const movementX = event.movementX || 0;
@@ -2874,7 +3144,7 @@ function onKeyDown(event) {
     event.preventDefault();
   }
 
-  if (!gameState.isRunning) return;
+  if (!gameState.isRunning || gameState.isPaused) return;
 
   switch (event.code) {
     case 'KeyW':
