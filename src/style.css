@@ -1982,101 +1982,216 @@ canvas {
 }
 
 /* Mobile adjustments for ad UI */
-@media (max-width: 768px) {
+/* Mobile adjustments for ad UI - Deep Fix */
+/* Mobile adjustments for ad UI - Deep Fix */
+/* Catches wider phones (up to 900px) OR short landscape screens (under 600px) */
+@media (max-width: 900px),
+(max-height: 600px) {
 
-  /* Revive Modal - Mobile */
-  #revive-modal {
-    padding: 1rem;
+  /* Global full-screen reset for mobile bars */
+  #revive-modal,
+  #gameover-screen,
+  #wave-ad-overlay,
+  .ad-overlay {
+    height: 100vh;
+    /* Fallback */
+    height: 100dvh;
+    /* Dynamic viewport height */
     overflow-y: auto;
+    /* Safer centering for scrolling content */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem 0;
+    /* Add top/bottom padding safe zone */
+    box-sizing: border-box;
   }
 
-  .revive-content {
+  /* Centers content if it fits, otherwise scrolls */
+  #revive-modal::before,
+  #gameover-screen::before,
+  .ad-overlay::before {
+    content: '';
+    display: block;
+    height: min-content;
+    margin: auto 0;
+  }
+
+  /* Content Boxes */
+  .revive-content,
+  .gameover-box,
+  .ad-content {
+    margin: auto 0;
+    /* Vertical centering when space allows */
+    max-height: 90dvh;
+    max-width: 92vw;
+    width: 92vw;
     padding: 1.5rem 1rem;
-    margin: 10px;
-    max-width: 95vw;
-    max-height: 85vh;
+    box-sizing: border-box;
     overflow-y: auto;
+    /* Ensure content stacks properly */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 
+  /* Revive Modal Specifics */
   .revive-skull {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 8vmin, 3rem);
     margin-bottom: 0.5rem;
   }
 
   .revive-title {
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 6vmin, 1.8rem);
     margin-bottom: 0.5rem;
   }
 
   .revive-subtitle {
-    font-size: 0.95rem;
+    font-size: clamp(0.8rem, 4vmin, 1rem);
     margin-bottom: 1rem;
-    line-height: 1.4;
+    line-height: 1.3;
   }
 
   .revive-reward {
     padding: 0.8rem;
     margin-bottom: 1rem;
+    flex-shrink: 0;
   }
 
   .revive-reward p {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
 
   .revive-buttons {
     gap: 0.8rem;
+    width: 100%;
+    flex-shrink: 0;
   }
 
   #revive-btn {
-    padding: 0.8rem 1.5rem;
+    width: 100%;
+    padding: 0.8rem;
     font-size: 0.9rem;
-    letter-spacing: 1px;
+    white-space: nowrap;
   }
 
   #give-up-btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
+    width: 100%;
+    padding: 0.8rem;
   }
 
-  /* Wave Ad Overlay - Mobile */
+  /* Game Over Specifics in Mobile */
+  .gameover-title {
+    font-size: clamp(2rem, 8vmin, 4rem);
+  }
+
+  .stat-grid {
+    gap: 0.5rem;
+  }
+
+  .final-value {
+    font-size: clamp(1.5rem, 5vmin, 3rem);
+  }
+
+  /* Wave Ad Overlay */
   #wave-ad-overlay {
+    align-items: center;
+    /* Keep centered for simple text */
+    justify-content: center;
     padding: 1rem;
   }
 
   .wave-transition-text {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    letter-spacing: 2px;
+    font-size: clamp(1.2rem, 5vmin, 2rem);
     text-align: center;
-    padding: 0 1rem;
+    width: 100%;
   }
 
-  .ad-content {
-    padding: 1.5rem;
-    margin: 10px;
-    max-width: 95vw;
-    max-height: 85vh;
-    overflow-y: auto;
-  }
-
-  /* Extra Life Button - Mobile */
+  /* Extra Life Button */
   #extra-life-btn {
-    bottom: calc(var(--safe-area-bottom) + 100px);
+    bottom: calc(var(--safe-area-bottom) + 80px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 0.6rem 1rem;
-    font-size: 0.75rem;
+    width: max-content;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
   }
 
   #extra-life-btn.show {
     transform: translateX(-50%) translateY(0);
   }
 
-  /* Banner Ad - Mobile */
+  /* Banner Ad */
   #banner-ad-container {
-    width: 280px;
+    width: 300px;
     height: 50px;
     bottom: 10px;
+    max-width: 95vw;
+  }
+}
+
+/* Landscape Mode Specific Fixes for Mobile Games */
+@media (orientation: landscape) and (max-height: 600px) {
+  .revive-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+    text-align: left;
+    max-height: 95dvh;
+    max-width: 700px;
+  }
+
+  .revive-skull {
+    font-size: 2.5rem;
+    margin: 0;
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  .revive-title {
+    font-size: 1.5rem;
+    margin: 0;
+    grid-column: 2;
+    align-self: end;
+  }
+
+  .revive-subtitle {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .revive-buttons {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .revive-reward {
+    grid-column: 1;
+    grid-row: 3;
+    margin: 0;
+  }
+
+  .gameover-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 800px;
+  }
+
+  .gameover-title {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+  }
+
+  .stat-grid {
+    margin-bottom: 0.5rem;
   }
 }
 
