@@ -1,5 +1,5 @@
 /**
- * AdManager - Centralized ad management for Learn Shoot
+ * AdManager - Centralized ad management for Learn Fire
  * 
  * Handles all ad lifecycle operations including:
  * - Rewarded video ads (revive, extra life)

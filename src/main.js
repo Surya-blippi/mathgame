@@ -1793,17 +1793,21 @@ function createUI() {
   startScreen.id = 'start-screen';
   startScreen.innerHTML = `
     <div class="start-content">
-      <h1 class="game-title">SOLVE AND SHOOT</h1>
-      <p class="subtitle">NEURAL LINK ESTABLISHED</p>
+      <div class="title-container">
+        <h1 class="game-title">LEARN<span class="highlight">FIRE</span></h1>
+        <div class="title-underline"></div>
+      </div>
       
-      <div class="mode-selection">
+      <p class="mode-label">SELECT YOUR CHALLENGE</p>
+      
+      <div class="mode-select">
         <!-- MATH CARD -->
         <div class="mode-card selected" id="mode-math" data-mode="math">
           <div class="check-mark">✓</div>
           <div class="mode-icon">🔢</div>
           <div class="mode-info">
             <span class="mode-title">MATH</span>
-            <span class="mode-desc">Solve equations to defeat enemies.</span>
+            <span class="mode-desc">Quick calculations</span>
           </div>
         </div>
 
@@ -1813,7 +1817,7 @@ function createUI() {
           <div class="mode-icon">❓</div>
           <div class="mode-info">
             <span class="mode-title">QUIZ</span>
-            <span class="mode-desc">General knowledge challenges.</span>
+            <span class="mode-desc">Knowledge test</span>
           </div>
         </div>
 
@@ -1823,12 +1827,18 @@ function createUI() {
           <div class="mode-icon">📝</div>
           <div class="mode-info">
             <span class="mode-title">ENGLISH</span>
-            <span class="mode-desc">Language and grammar prowess.</span>
+            <span class="mode-desc">Language skills</span>
           </div>
         </div>
       </div>
 
-      <button class="start-btn" id="start-btn">INITIATE MISSION</button>
+      <button class="start-btn" id="start-btn">START MISSION</button>
+      
+      <div class="start-footer">
+        <a href="/about.html" class="footer-link">About Mission</a>
+        <a href="/privacy.html" class="footer-link">Privacy Protocol</a>
+        <a href="/contact.html" class="footer-link">Comms Channel</a>
+      </div>
     </div>
   `;
   app.appendChild(startScreen);
