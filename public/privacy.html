@@ -11,12 +11,134 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="./src/style.css">
     <style>
-        /* Inline overrides for text pages if needed, but mostly relying on style.css */
+        :root {
+            --primary: #00f3ff;
+            --primary-glow: rgba(0, 243, 255, 0.5);
+            --accent: #ffd700;
+            --bg-dark: #0a0a1a;
+            --text-primary: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
             overflow-y: auto;
-            /* Allow scrolling for text pages */
+            background-image:
+                linear-gradient(rgba(10, 10, 26, 0.95), rgba(10, 10, 26, 0.95)),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300f3ff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-back-btn {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-back-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .page-content {
+            background: rgba(16, 24, 48, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .page-content h2 {
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-content p,
+        .page-content ul {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .page-content ul {
+            padding-left: 1.5rem;
+        }
+
+        .page-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .page-content a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-email {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .page-content {
+                padding: 1rem;
+            }
         }
     </style>
 </head>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0a1a" />
+    <title>About - Learn Fire</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --primary-glow: rgba(0, 243, 255, 0.5);
+            --accent: #ffd700;
+            --bg-dark: #0a0a1a;
+            --text-primary: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            overflow-y: auto;
+            background-image:
+                linear-gradient(rgba(10, 10, 26, 0.95), rgba(10, 10, 26, 0.95)),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300f3ff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-back-btn {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-back-btn:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .page-content {
+            background: rgba(16, 24, 48, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 2rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .page-content h2,
+        .page-content h3 {
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            border-left: 3px solid var(--accent);
+            padding-left: 1rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-content p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .page-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .page-content a:hover {
+            text-decoration: underline;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            border: none;
+            padding-left: 0;
+            margin-top: 0;
+        }
+
+        @media (max-width: 600px) {
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .page-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container obsidian-glass">
+        <div class="page-header">
+            <h1 class="glitch-text" data-text="MISSION BRIEFING">MISSION BRIEFING</h1>
+            <a href="/" class="nav-back-btn">⬅ RETURN TO MISSION</a>
+        </div>
+
+        <div class="page-content about-content">
+            <section class="mission-statement">
+                <h2>THE OBJECTIVE: LEARNING MADE FUN</h2>
+                <p><strong>Learn Fire</strong> was built on a simple premise: Education shouldn't be boring. By
+                    combining the adrenaline-pumping mechanics of a First-Person Shooter (FPS) with core educational
+                    concepts, we transform study time into play time.</p>
+            </section>
+
+            <section class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧮</div>
+                    <h3>Mental Math</h3>
+                    <p>Sharpen your arithmetic skills under pressure. Calculate quickly to defeat enemies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📖</div>
+                    <h3>English Mastery</h3>
+                    <p>Test your vocabulary and grammar. Identify the right answers to progress.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Quiz Mode</h3>
+                    <p>Challenge your general knowledge in a high-stakes environment.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Why "Learn Fire"?</h2>
+                <p> Traditional learning apps can feel passive. In Learn Fire, every correct answer is a victory. The
+                    "Gamification" of learning keeps engagement high, helping students practice longer and retain more.
+                </p>
+                <p>Whether you're practicing multiplication tables or learning new words, the immediate feedback loop of
+                    the game makes improvement satisfying.</p>
+            </section>
+
+            <section class="dev-note">
+                <h3>Developer's Note</h3>
+                <p>This project is constantly evolving. We are dedicated to adding more subjects, game modes, and
+                    features to help learners worldwide.</p>
+            </section>
+
+        </div>
+    </div>
+</body>
+
+</html>
