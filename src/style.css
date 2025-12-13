@@ -1405,6 +1405,102 @@ canvas {
   .final-stats {
     flex-direction: column;
   }
+
+  /* Game Over Screen - Mobile Fix */
+  #gameover-screen {
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .gameover-box {
+    padding: 1.5rem 1rem;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    clip-path: none;
+    /* Remove clip-path for mobile - can cause issues */
+    border-radius: 15px;
+  }
+
+  .gameover-title {
+    font-size: 6vmin;
+    margin-bottom: 2vmin;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .final-stat-box {
+    padding: 0.5rem;
+  }
+
+  .final-label {
+    font-size: 0.65rem;
+  }
+
+  .final-value {
+    font-size: 4vmin;
+  }
+
+  .share-section {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+
+  .share-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.8rem;
+  }
+
+  .share-buttons {
+    gap: 0.8rem;
+  }
+
+  .share-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .share-icon {
+    font-size: 1.1rem;
+  }
+
+  .start-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+
+  /* Ad Overlays - Mobile Fix */
+  .ad-overlay,
+  #revive-modal,
+  .wave-ad-overlay {
+    padding: 1rem;
+  }
+
+  .revive-content {
+    padding: 1.5rem;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .revive-title {
+    font-size: 1.5rem;
+  }
+
+  .revive-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .revive-btn,
+  .decline-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
 }
 
 #mobile-hint {
