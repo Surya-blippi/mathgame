@@ -3361,11 +3361,34 @@ function animate() {
 }
 
 // ==================== WINDOW RESIZE ====================
-function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+function handleResize() {
+  const width = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+  const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(width, height);
+
+  // Also update CSS to ensure it matches
+  renderer.domElement.style.width = '100vw';
+  renderer.domElement.style.height = '100vh';
 }
+
+function onWindowResize() {
+  handleResize();
+
+  // On mobile, sometimes the resize event fires before the UI is fully settled
+  if (isMobile) {
+    setTimeout(handleResize, 500); // Retry after animation
+    setTimeout(handleResize, 1000); // Double check
+  }
+}
+
+// Listen for orientation change specifically
+window.addEventListener('orientationchange', () => {
+  setTimeout(handleResize, 200);
+  setTimeout(handleResize, 1000);
+});
 
 // ==================== MOUSE CONTROLS ====================
 function onCanvasClick(event) {
