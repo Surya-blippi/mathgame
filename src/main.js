@@ -1993,6 +1993,25 @@ function createUI() {
           <span class="final-value" id="final-kills">0</span>
         </div>
       </div>
+      
+      <div class="share-section">
+        <p class="share-label">SHARE YOUR SCORE</p>
+        <div class="share-buttons">
+          <button class="share-btn share-twitter" id="share-twitter" title="Share on X/Twitter">
+            <span class="share-icon">𝕏</span>
+          </button>
+          <button class="share-btn share-whatsapp" id="share-whatsapp" title="Share on WhatsApp">
+            <span class="share-icon">📱</span>
+          </button>
+          <button class="share-btn share-native" id="share-native" title="Share">
+            <span class="share-icon">📤</span>
+          </button>
+          <button class="share-btn share-copy" id="share-copy" title="Copy to clipboard">
+            <span class="share-icon">📋</span>
+          </button>
+        </div>
+      </div>
+      
       <button class="start-btn" id="restart-btn">REBOOT SYSTEM</button>
     </div>
   `;
@@ -2051,6 +2070,65 @@ function createUI() {
   // Event listeners
   const startBtn = document.getElementById('start-btn');
   const restartBtn = document.getElementById('restart-btn');
+
+  // Share functionality
+  const GAME_URL = 'https://www.learnfire.live';
+
+  function getShareText() {
+    const score = document.getElementById('final-score').textContent;
+    const wave = document.getElementById('final-waves').textContent;
+    const kills = document.getElementById('final-kills').textContent;
+    return `🔥 I scored ${score} points, reached wave ${wave}, and got ${kills} kills in Learn Fire! Can you beat my score? 🎮`;
+  }
+
+  // Twitter/X Share
+  document.getElementById('share-twitter').addEventListener('click', () => {
+    const text = encodeURIComponent(getShareText());
+    const url = encodeURIComponent(GAME_URL);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=550,height=420');
+  });
+
+  // WhatsApp Share
+  document.getElementById('share-whatsapp').addEventListener('click', () => {
+    const text = encodeURIComponent(getShareText() + '\n' + GAME_URL);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  });
+
+  // Native Share (mobile friendly)
+  document.getElementById('share-native').addEventListener('click', async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Learn Fire - My Score',
+          text: getShareText(),
+          url: GAME_URL
+        });
+      } catch (err) {
+        console.log('Share cancelled');
+      }
+    } else {
+      // Fallback - just copy to clipboard
+      document.getElementById('share-copy').click();
+    }
+  });
+
+  // Copy to Clipboard
+  document.getElementById('share-copy').addEventListener('click', async () => {
+    const text = getShareText() + '\n' + GAME_URL;
+    try {
+      await navigator.clipboard.writeText(text);
+      const btn = document.getElementById('share-copy');
+      const originalIcon = btn.innerHTML;
+      btn.innerHTML = '<span class="share-icon">✓</span>';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = originalIcon;
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
 
   // Select all mode cards
   const modeCards = document.querySelectorAll('.mode-card');
