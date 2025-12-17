@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Challenge Generator</title>
+    <style>
+        body {
+            background: #111;
+            color: #0f0;
+            font-family: monospace;
+            padding: 2rem;
+        }
+
+        .box {
+            border: 1px solid #333;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #fff;
+        }
+
+        .code {
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .label {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Support Code Generator</h1>
+    <p>Send these codes to users to unlock Premium (Valid 48h).</p>
+
+    <div class="box">
+        <div class="label">Today's Code (Universal)</div>
+        <div id="code-today" class="code">Generating...</div>
+    </div>
+
+    <div class="box">
+        <div class="label">Yesterday's Code (Grace Period)</div>
+        <div id="code-yesterday" class="code">Generating...</div>
+    </div>
+
+    <script>
+        const SECRET_SALT = "DODO_MATH_FPS_SECRET_KEY_2025";
+
+        async function generateDailyCode(dateString) {
+            const data = SECRET_SALT + dateString;
+            const msgBuffer = new TextEncoder().encode(data);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            // Use first 4 bytes for valid chars mapping
+            let hashVal = 0;
+            for (let i = 0; i < 4; i++) hashVal = (hashVal << 8) + hashArray[i];
+
+            const validChars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let code = "";
+            for (let i = 0; i < 6; i++) {
+                code += validChars.charAt(Math.abs(hashVal) % validChars.length);
+                hashVal = Math.floor(hashVal / validChars.length);
+            }
+            return "RES-" + code;
+        }
+
+        function getUTCDateString(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        async function init() {
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            document.getElementById('code-today').textContent = await generateDailyCode(getUTCDateString(today));
+            document.getElementById('code-yesterday').textContent = await generateDailyCode(getUTCDateString(yesterday));
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

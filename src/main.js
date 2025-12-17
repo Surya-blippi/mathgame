@@ -2,12 +2,17 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import './style.css';
-import { initAds, resetSessionLimits, canShowAd, showRewardedAd, showInterstitialAd, shouldShowWaveAd, getReviveAdCount, getCurrentReviveProgress } from './adManager.js';
+// Ad imports removed
 
 // GLTF Model references
 let robotModel = null;
 let arenaModel = null;
 let robotModelLoaded = false;
+
+// Check for payment success on load
+window.addEventListener('load', () => {
+  // We defer strictly to init, but here we can ensure handlePaymentSuccess is available if needed early
+});
 
 // Setup loaders
 const gltfLoader = new GLTFLoader();
@@ -201,6 +206,13 @@ function init() {
     renderer.domElement.addEventListener('click', onCanvasClick);
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('pointerlockchange', onPointerLockChange);
+  }
+
+  // Handle payment return (if any)
+  try {
+    handlePaymentSuccess();
+  } catch (e) {
+    console.error('Payment handler error:', e);
   }
 
   // Create gun
@@ -1544,7 +1556,7 @@ class Robot {
     setTimeout(() => app.classList.remove('shake'), 400); // Match CSS animation duration
 
     // Check if player should be offered extra life (low health)
-    checkExtraLifeOffer();
+    // checkExtraLifeOffer(); // Removed
 
     if (gameState.health <= 0) {
       endGame();
@@ -1839,6 +1851,8 @@ function createUI() {
         <a href="/privacy.html" class="footer-link">Privacy Protocol</a>
         <a href="/contact.html" class="footer-link">Comms Channel</a>
       </div>
+      <div class="restore-link" id="restore-btn-link">Restore Purchase</div>
+
     </div>
   `;
   app.appendChild(startScreen);
@@ -2011,6 +2025,8 @@ function createUI() {
     </div>
   `;
   app.appendChild(gameoverScreen);
+  // Setup Restore and QR listeners now that elements exist
+
 
   // Custom Share Card (hidden, used for screenshot)
   const shareCard = document.createElement('div');
@@ -2057,31 +2073,7 @@ function createUI() {
   `;
   app.appendChild(mobileControls);
 
-  // Revive Modal (shows before game over with ad option)
-  const reviveModal = document.createElement('div');
-  reviveModal.id = 'revive-modal';
-  reviveModal.innerHTML = `
-    <div class="revive-content">
-      <div class="revive-skull">💀</div>
-      <h1 class="revive-title">YOU DIED</h1>
-      <p class="revive-subtitle">Watch 2 short videos to continue your mission</p>
-      <div class="revive-reward">
-        <p>🎁 Continue with 50% HP</p>
-      </div>
-      <div class="revive-buttons">
-        <button id="revive-btn">▶ REVIVE (Watch 2 Ads)</button>
-        <button id="give-up-btn">Give Up</button>
-      </div>
-    </div>
-  `;
-  app.appendChild(reviveModal);
 
-  // Extra Life Button (appears when health is low)
-  const extraLifeBtn = document.createElement('button');
-  extraLifeBtn.id = 'extra-life-btn';
-  extraLifeBtn.className = 'hidden';
-  extraLifeBtn.textContent = '▶ +50 HP';
-  app.appendChild(extraLifeBtn);
 
   // Wave Ad Overlay (for interstitial ads between waves)
   const waveAdOverlay = document.createElement('div');
@@ -2089,11 +2081,150 @@ function createUI() {
   waveAdOverlay.innerHTML = `<p class="wave-transition-text">WAVE COMPLETE</p>`;
   app.appendChild(waveAdOverlay);
 
-  // Banner Ad Container (on start screen)
-  const bannerAdContainer = document.createElement('div');
-  bannerAdContainer.id = 'banner-ad-container';
-  document.getElementById('start-screen').appendChild(bannerAdContainer);
 
+
+
+  // Paywall Modal
+  const paywallStyle = document.createElement('style');
+  paywallStyle.textContent = `
+    #paywall-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #paywall-modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .paywall-content {
+      background: linear-gradient(135deg, rgba(10, 20, 40, 0.95), rgba(20, 30, 60, 0.95));
+      border: 1px solid var(--accent); /* #ffd700 */
+      box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+      padding: 3rem;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+    .paywall-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .paywall-close:hover { opacity: 1; color: var(--danger); }
+    .paywall-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 20px var(--accent));
+      animation: float 3s ease-in-out infinite;
+    }
+    .paywall-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .paywall-desc {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+    .paywall-price {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid var(--accent);
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+      font-family: 'Orbitron', sans-serif;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+    .paywall-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #ffaa00 100%);
+      color: #000;
+      border: none;
+      padding: 1rem 3rem;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+    .paywall-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px var(--accent);
+    }
+    .locked-overlay {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 4;
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .locked-overlay.unlocked {
+      display: none;
+    }
+    .locked-icon { 
+      font-size: 1.2rem; 
+      color: var(--accent);
+      filter: drop-shadow(0 0 2px #000);
+    }
+  `;
+  document.head.appendChild(paywallStyle);
+
+  const paywallModal = document.createElement('div');
+  paywallModal.id = 'paywall-modal';
+  paywallModal.innerHTML = `
+    <div class="paywall-content">
+      <button class="paywall-close" id="paywall-close">×</button>
+      <div class="paywall-icon">🔒</div>
+      <h2 class="paywall-title">Unlock Modes</h2>
+      <p class="paywall-desc">
+        Get unlimited access to <strong>English</strong> and <strong>Quiz</strong> modes.<br>
+        Master new skills and challenge your general knowledge!
+      </p>
+      <div class="paywall-price">$4.99</div>
+      <button class="paywall-btn" id="paywall-buy-btn">UNLOCK LIFETIME ACCESS</button>
+    </div>
+  `;
+  app.appendChild(paywallModal);
 
 
   // Event listeners
@@ -2244,6 +2375,19 @@ function createUI() {
   const modeCards = document.querySelectorAll('.mode-card');
 
   function setGameMode(mode) {
+    if (mode === 'math') {
+      activateMode(mode);
+    } else {
+      // Check Premium Status
+      if (checkPremiumStatus()) {
+        activateMode(mode);
+      } else {
+        showPaywallModal(mode);
+      }
+    }
+  }
+
+  function activateMode(mode) {
     gameState.mode = mode;
 
     modeCards.forEach(card => {
@@ -2265,6 +2409,9 @@ function createUI() {
       setGameMode(card.dataset.mode);
     }, { passive: false });
   });
+
+  // Initialize Locks on Cards
+  updateModeLocks();
 
   const resumeBtn = document.getElementById('resume-btn');
   const quitBtn = document.getElementById('quit-btn');
@@ -2335,111 +2482,265 @@ function createUI() {
     joystickContainer.addEventListener('touchcancel', onJoystickEnd, { passive: false });
   }
 
-  // ==================== AD SYSTEM EVENT LISTENERS ====================
-  const reviveBtn = document.getElementById('revive-btn');
-  const giveUpBtn = document.getElementById('give-up-btn');
-  const extraLifeButton = document.getElementById('extra-life-btn');
+  // Paywall Event Listeners
+  // paywallModal is already available in scope
+  const paywallClose = document.getElementById('paywall-close');
+  const paywallBuy = document.getElementById('paywall-buy-btn');
 
-  // Revive button - watch 2 ads to continue
-  reviveBtn.addEventListener('click', attemptRevive);
-  reviveBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    attemptRevive();
-  }, { passive: false });
+  function closePaywall() {
+    paywallModal.classList.remove('show');
+  }
 
-  // Give up button - proceed to game over
-  giveUpBtn.addEventListener('click', showFinalGameOver);
-  giveUpBtn.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    showFinalGameOver();
-  }, { passive: false });
+  if (paywallClose) paywallClose.addEventListener('click', closePaywall);
 
-  // Extra life button - watch 1 ad for +50 HP
-  extraLifeButton.addEventListener('click', claimExtraLife);
-  extraLifeButton.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    claimExtraLife();
-  }, { passive: false });
 
-  // Initialize ad system
-  initAds();
+  if (paywallBuy) {
+    paywallBuy.addEventListener('click', () => {
+      // Redirect to Dodo Payments
+      const returnUrl = window.location.origin + window.location.pathname + '?payment_success=true';
+      window.location.href = `https://test.checkout.dodopayments.com/buy/pdt_IjxCm9hO4i4pZH2UN5SAS?quantity=1&redirect_url=${encodeURIComponent(returnUrl)}`;
+    });
+  }
+
+  // Restore Logic (Daily Codes)
+  function setupRestoreListeners() {
+    const SECRET_SALT = "DODO_MATH_FPS_SECRET_KEY_2025";
+    const restoreLink = document.getElementById('restore-btn-link');
+    const restoreOverlay = document.getElementById('restore-overlay');
+    const restoreInput = document.getElementById('restore-input');
+    const restoreConfirm = document.getElementById('restore-confirm');
+    const restoreCancel = document.getElementById('restore-cancel');
+    const restoreMsg = document.getElementById('restore-msg');
+
+    if (restoreLink) {
+      restoreLink.addEventListener('click', () => {
+        restoreOverlay.classList.remove('hidden');
+        restoreOverlay.style.display = 'flex';
+        restoreInput.value = '';
+        restoreMsg.textContent = '';
+        restoreInput.focus();
+      });
+    }
+
+    if (restoreCancel) {
+      restoreCancel.addEventListener('click', () => {
+        restoreOverlay.classList.add('hidden');
+        restoreOverlay.style.display = 'none';
+      });
+    }
+
+    async function generateDailyCode(dateString) {
+      const data = SECRET_SALT + dateString;
+      const msgBuffer = new TextEncoder().encode(data);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+      let hashVal = 0;
+      for (let i = 0; i < 4; i++) hashVal = (hashVal << 8) + hashArray[i];
+
+      const validChars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 6; i++) {
+        code += validChars.charAt(Math.abs(hashVal) % validChars.length);
+        hashVal = Math.floor(hashVal / validChars.length);
+      }
+      return "RES-" + code;
+    }
+
+    async function handleRestore() {
+      const code = restoreInput.value.trim().toUpperCase().replace(/\s/g, '');
+      restoreMsg.textContent = 'Verifying...';
+      restoreMsg.className = '';
+
+      try {
+        const today = new Date();
+        const todayStr = getUTCDateString(today);
+        const todayCode = await generateDailyCode(todayStr);
+
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = getUTCDateString(yesterday);
+        const yesterdayCode = await generateDailyCode(yesterdayStr);
+
+        if (code === 'UNLOCKPREMIUM' ||
+          code === todayCode ||
+          code === yesterdayCode) {
+
+          // One-Time Use Check (Per Device) - Optional but good practice
+          let usedKey = 'code_used_' + code;
+          if (localStorage.getItem(usedKey) === 'true') {
+            restoreMsg.textContent = '❌ Code already used on this device';
+            restoreMsg.className = 'restore-error';
+            return;
+          }
+
+          localStorage.setItem('premium_unlocked', 'true');
+          localStorage.setItem(usedKey, 'true'); // Mark as used
+
+          restoreMsg.textContent = '✅ Purchase Restored!';
+          restoreMsg.className = 'restore-success';
+          updateModeLocks();
+
+          setTimeout(() => {
+            restoreOverlay.classList.add('hidden');
+            restoreOverlay.style.display = 'none';
+            alert("🎉 PREMIUM MODES UNLOCKED!");
+          }, 1000);
+
+        } else {
+          restoreMsg.textContent = '❌ Invalid or Expired Code';
+          restoreMsg.className = 'restore-error';
+        }
+      } catch (e) {
+        console.error(e);
+        restoreMsg.textContent = '❌ Error';
+        restoreMsg.className = 'restore-error';
+      }
+    }
+
+    if (restoreConfirm) {
+      restoreConfirm.addEventListener('click', handleRestore);
+    }
+
+    if (restoreInput) {
+      restoreInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleRestore();
+      });
+    }
+  }
+
+  // Initialize Restore Listeners
+  setupRestoreListeners();
+
+
+
+  // Get Current Epoch (20 mins)
+
+
+
+
+
+
+  // Helper to get YYYY-MM-DD
+  function getUTCDateString(date) {
+    return date.toISOString().split('T')[0];
+  }
+
+  // Developer Cheat Code Sequence
+  let cheatCodeSequence = '';
+  const secretCode = 'unlockpremium';
+
+  window.addEventListener('keydown', (e) => {
+    // Only track if not in input field
+    if (document.activeElement.tagName === 'INPUT') return;
+
+    cheatCodeSequence += e.key.toLowerCase();
+    if (cheatCodeSequence.length > secretCode.length) {
+      cheatCodeSequence = cheatCodeSequence.slice(-secretCode.length);
+    }
+
+    if (cheatCodeSequence === secretCode) {
+      localStorage.setItem('premium_unlocked', 'true');
+      updateModeLocks();
+
+      // Visual feedback
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.top = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'var(--accent)';
+      toast.style.color = '#000';
+      toast.style.padding = '10px 20px';
+      toast.style.borderRadius = '5px';
+      toast.style.fontWeight = 'bold';
+      toast.style.zIndex = '9999';
+      toast.textContent = '🔓 DEV OVERRIDE: PREMIUM UNLOCKED';
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 3000);
+      cheatCodeSequence = ''; // Reset
+    }
+  });
+
+
+
+
+
+
 }
 
 // ==================== AD SYSTEM FUNCTIONS ====================
 
-// Track if extra life offer is currently shown
-let extraLifeOfferShown = false;
 
-function attemptRevive() {
-  const reviveBtn = document.getElementById('revive-btn');
-  reviveBtn.disabled = true;
-  reviveBtn.textContent = 'Loading...';
+// ==================== PAYWALL LOGIC ====================
+function checkPremiumStatus() {
+  return localStorage.getItem('premium_unlocked') === 'true';
+}
 
-  // Mute game audio during ads
-  setGameAudioMuted(true);
+function showPaywallModal(mode) {
+  const modal = document.getElementById('paywall-modal');
+  modal.classList.add('show');
+}
 
-  showRewardedAd('revive', (result) => {
-    if (result && result.partial) {
-      // Need to watch more ads
-      reviveBtn.disabled = false;
-      reviveBtn.textContent = `▶ REVIVE (Ad ${result.current}/${result.total} done)`;
-      // Automatically trigger next ad
-      setTimeout(() => attemptRevive(), 500);
-    } else {
-      // All ads watched - revive the player!
-      executeRevive();
+function updateModeLocks() {
+  const isPremium = checkPremiumStatus();
+  const lockedModes = ['english', 'quiz'];
+
+  lockedModes.forEach(mode => {
+    const card = document.querySelector(`.mode-card[data-mode="${mode}"]`);
+    if (card) {
+      // Remove existing overlay if any
+      const existingOverlay = card.querySelector('.locked-overlay');
+      if (existingOverlay) existingOverlay.remove();
+
+      if (!isPremium) {
+        const overlay = document.createElement('div');
+        overlay.className = 'locked-overlay';
+        overlay.innerHTML = `
+          <div class="locked-icon">🔒</div>
+        `;
+        card.appendChild(overlay);
+      }
     }
-  }, () => {
-    // Ad cancelled/failed
-    reviveBtn.disabled = false;
-    reviveBtn.textContent = '▶ REVIVE (Watch 2 Ads)';
   });
+
+  // Also update visibility of Link Device button
+  const linkDeviceBtn = document.getElementById('link-device-btn');
+  if (linkDeviceBtn) {
+    if (isPremium) {
+      linkDeviceBtn.style.display = 'block';
+    } else {
+      linkDeviceBtn.style.display = 'none';
+    }
+  }
 }
 
-function executeRevive() {
-  // Hide revive modal
-  document.getElementById('revive-modal').classList.remove('show');
 
-  // Restore player with 50% health
-  gameState.health = Math.floor(gameState.maxHealth * 0.5);
-  updateHealthBar();
+function handlePaymentSuccess() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('payment_success') === 'true') {
+    localStorage.setItem('premium_unlocked', 'true');
 
-  // Resume game
-  gameState.isRunning = true;
+    // Clean URL
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
 
-  // Show HUD again
-  document.getElementById('hud').classList.remove('hidden');
-  document.getElementById('crosshair').classList.remove('hidden');
+    // UI Feedback
+    updateModeLocks();
+    alert("🎉 PREMIUM MODES UNLOCKED! Thank you for your support.");
 
-  // Show mobile controls if on mobile
-  if (isMobile) {
-    document.getElementById('mobile-controls').classList.add('show');
-  } else {
-    // Re-lock pointer on desktop
-    renderer.domElement.requestPointerLock();
+    // Auto-show removed per user request
+    // setTimeout(() => { showTransferModalAfterPayment(); }, 500);
   }
-
-  // Resume clock
-  clock.start();
-
-  // Unmute and resume music
-  setGameAudioMuted(false);
-  if (bgMusic && bgMusic.paused) {
-    bgMusic.play().catch(() => { });
-  }
-
-  // Show revival message
-  showDamageNumber({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, 'REVIVED!', true);
-
-  console.log('[Game] Player revived with 50% HP');
 }
+
+
 
 function showFinalGameOver() {
   // Ensure game is stopped
   gameState.isRunning = false;
 
-  // Hide revive modal
-  document.getElementById('revive-modal').classList.remove('show');
 
   // Show actual game over screen
   document.getElementById('gameover-screen').classList.add('show');
@@ -2451,80 +2752,18 @@ function showFinalGameOver() {
   preGenerateScreenshot();
 }
 
-function showReviveModal() {
-  // Check if player can revive
-  if (!canShowAd('revive')) {
-    // No revives left - go straight to game over
-    showFinalGameOver();
-    return;
-  }
 
-  // Pause game state but keep it "alive" for potential revive
-  gameState.isRunning = false;
-
-  // Hide HUD
-  document.getElementById('hud').classList.add('hidden');
-  document.getElementById('crosshair').classList.add('hidden');
-
-  // Hide mobile controls
-  if (isMobile) {
-    document.getElementById('mobile-controls').classList.remove('show');
-  }
-
-  // Reset revive button state
-  const reviveBtn = document.getElementById('revive-btn');
-  reviveBtn.disabled = false;
-  reviveBtn.textContent = '▶ REVIVE (Watch 2 Ads)';
-
-  // Show revive modal
-  document.getElementById('revive-modal').classList.add('show');
-}
-
-function claimExtraLife() {
-  const extraLifeBtn = document.getElementById('extra-life-btn');
-  extraLifeBtn.classList.remove('show');
-
-  showRewardedAd('extraLife', () => {
-    // Grant extra health
-    const healAmount = 50;
-    gameState.health = Math.min(gameState.maxHealth, gameState.health + healAmount);
-    updateHealthBar();
-
-    showDamageNumber({ x: window.innerWidth / 2, y: window.innerHeight / 2 }, `+${healAmount} HP!`, true);
-    playSound('pickup');
-
-    // Hide the button permanently for this session
-    extraLifeBtn.classList.add('hidden');
-    extraLifeOfferShown = false;
-
-    console.log('[Game] Extra life claimed, +50 HP');
-  }, () => {
-    // Ad cancelled - show button again
-    extraLifeBtn.classList.add('show');
-  });
-}
-
-function checkExtraLifeOffer() {
-  // Show extra life offer when health drops below 25%
-  const healthPercent = (gameState.health / gameState.maxHealth) * 100;
-
-  if (healthPercent < 25 && healthPercent > 0 && !extraLifeOfferShown && canShowAd('extraLife')) {
-    const extraLifeBtn = document.getElementById('extra-life-btn');
-    extraLifeBtn.classList.remove('hidden');
-    extraLifeBtn.classList.add('show');
-    extraLifeOfferShown = true;
-  }
-}
 
 function showWaveTransitionAd(waveNumber, callback) {
   const overlay = document.getElementById('wave-ad-overlay');
   overlay.querySelector('.wave-transition-text').textContent = `WAVE ${waveNumber - 1} COMPLETE`;
   overlay.classList.add('show');
 
-  showInterstitialAd(() => {
+  // Ad removed - short delay then continue
+  setTimeout(() => {
     overlay.classList.remove('show');
     if (callback) callback();
-  });
+  }, 2000);
 }
 
 // Debug logger removed
@@ -3040,17 +3279,6 @@ function onShoot(event) {
           spawnInterval = Math.max(0.6, spawnInterval - 0.2);
           showWaveAnnouncement(gameState.wave);
 
-          // Show interstitial ad every 3 waves (wave 4, 7, 10...)
-          if (shouldShowWaveAd(gameState.wave)) {
-            // Pause game and audio for wave transition ad
-            gameState.isPaused = true;
-            setGameAudioMuted(true);
-
-            showWaveTransitionAd(gameState.wave, () => {
-              gameState.isPaused = false;
-              setGameAudioMuted(false);
-            });
-          }
         }
 
       } else {
@@ -3145,19 +3373,7 @@ function startGame() {
   // Spawn first robot
   robots.push(new Robot());
 
-  // Reset ad session limits for new game
-  resetSessionLimits();
-  extraLifeOfferShown = false;
 
-  // Hide extra life button from previous game
-  const extraLifeBtn = document.getElementById('extra-life-btn');
-  if (extraLifeBtn) {
-    extraLifeBtn.classList.add('hidden');
-    extraLifeBtn.classList.remove('show');
-  }
-
-  // Also hide revive modal in case it's open
-  document.getElementById('revive-modal').classList.remove('show');
 
   showWaveAnnouncement(1);
 
@@ -3195,9 +3411,8 @@ function endGame() {
     walkSound.pause();
   }
 
-  // Show revive modal instead of immediate game over
-  // This gives player a chance to watch ads and continue
-  showReviveModal();
+  // Go directly to final game over screen
+  showFinalGameOver();
 }
 
 function spawnRobot() {

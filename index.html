@@ -28,9 +28,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Learn Fire - Educational FPS</title>
-  <meta name="google-adsense-account" content="ca-pub-2673888149354227">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2673888149354227"
-    crossorigin="anonymous"></script>
+
   <link
     href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap"
     rel="stylesheet">
@@ -46,8 +44,49 @@
       <p>OPTIMIZED FOR LANDSCAPE MODE</p>
     </div>
   </div>
+  <!-- Restore Purchase Overlay (Support Code) -->
+  <div id="restore-overlay" class="hidden"
+    style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; align-items:center; justify-content:center; display:none;">
+    <div
+      style="background:#0a0a0a; padding:2rem; border:1px solid var(--accent); border-radius:15px; text-align:center; max-width:400px; width:90%; box-shadow:0 0 40px rgba(255, 215, 0, 0.1);">
+      <h2 style="font-family:'Orbitron'; color:var(--accent); margin-bottom:1.5rem;">RESTORE PURCHASE</h2>
+
+      <p style="color:#ccc; margin-bottom:1rem; font-size:0.9rem;">
+        Enter the activation code provided by support:
+      </p>
+
+      <input type="text" id="restore-input" placeholder="RES-XXXXXX"
+        style="background:rgba(255,255,255,0.1); border:1px solid #333; color:#fff; padding:0.8rem; border-radius:5px; width:80%; margin-bottom:1rem; text-align:center; font-family:'Orbitron'; font-size:1.2rem; letter-spacing:2px; text-transform:uppercase;">
+
+      <div id="restore-msg" style="height:1.2rem; margin-bottom:1rem; font-size:0.8rem;"></div>
+
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button id="restore-confirm" class="menu-btn"
+          style="background:var(--success); color:#000; padding:0.6rem 1.5rem;">UNLOCK</button>
+        <button id="restore-cancel" class="menu-btn" style="background:#333; padding:0.6rem 1.5rem;">CANCEL</button>
+      </div>
+    </div>
+  </div>
   <div id="app"></div>
-  <script type="module" src="/src/main.js"></script>
+  <div id="restore-overlay" class="hidden">
+    <div class="restore-box">
+      <h2>RESTORE PURCHASE</h2>
+      <p>Enter your recovery code below:</p>
+      <input type="text" id="restore-input" placeholder="CODE-XXXX" maxlength="20">
+      <div class="restore-actions">
+        <button id="restore-cancel" class="menu-btn">CANCEL</button>
+        <button id="restore-confirm" class="menu-btn"
+          style="background: var(--accent); color: #000; border-color: var(--accent);">RESTORE</button>
+      </div>
+      <p id="restore-msg"></p>
+
+      <div class="support-info"
+        style="margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; font-size: 0.9rem; color: #aaa;">
+        <p style="margin-bottom: 0.5rem;">Reach out directly via <a href="mailto:hello@learnfire.live"
+            style="color: var(--primary); text-decoration: none; border-bottom: 1px dashed var(--primary);">email</a> to
+
+
+          <script type="module" src="/src/main.js"></script>
 </body>
 
 </html>

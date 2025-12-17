@@ -802,6 +802,107 @@ canvas {
 
 @keyframes shine {
   0% {
+    left: -50%;
+  }
+
+  100% {
+    left: 150%;
+  }
+}
+
+.restore-link {
+  margin-top: 2rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: underline;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: color 0.3s;
+}
+
+.restore-link:hover {
+  color: var(--accent);
+}
+
+/* Restore Overlay */
+#restore-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+#restore-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.restore-box {
+  background: rgba(10, 20, 30, 0.95);
+  border: 1px solid var(--accent);
+  padding: 3rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
+  min-width: 350px;
+}
+
+.restore-box h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  letter-spacing: 2px;
+}
+
+.restore-box p {
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+#restore-input {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #444;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 4px;
+}
+
+#restore-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.restore-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#restore-msg {
+  margin-top: 1rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  height: 1.2rem;
+}
+
+.restore-success { color: var(--success); }
+.restore-error { color: var(--danger); }
+
+@keyframes shine {
+  0% {
     transform: translateX(-100%) rotate(45deg);
   }
 
