@@ -1987,6 +1987,13 @@ function createUI() {
   `;
   app.appendChild(pauseMenu);
 
+  // Mobile Pause Button (HUD)
+  const mobilePauseBtn = document.createElement('button');
+  mobilePauseBtn.id = 'mobile-pause-btn';
+  mobilePauseBtn.innerHTML = '⏸';
+  mobilePauseBtn.className = 'hidden';
+  app.appendChild(mobilePauseBtn);
+
   // Game Over Screen (existing)
   const gameoverScreen = document.createElement('div');
   gameoverScreen.id = 'gameover-screen';
@@ -2205,6 +2212,39 @@ function createUI() {
       font-size: 1.2rem; 
       color: var(--accent);
       filter: drop-shadow(0 0 2px #000);
+    }
+    
+    /* Mobile Optimization */
+    @media (max-width: 900px) and (orientation: landscape) {
+        .paywall-content {
+            padding: 1.5rem;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            text-align: left;
+        }
+        .paywall-icon { 
+            grid-column: 1; grid-row: 1 / span 3; 
+            font-size: 3rem; margin: 0; justify-self: center; 
+        }
+        .paywall-title { grid-column: 2; font-size: 1.5rem; margin: 0; }
+        .paywall-desc { grid-column: 2; font-size: 0.9rem; margin: 0; }
+        .paywall-price { grid-column: 2; margin: 0; padding: 0.5rem 1rem; font-size: 1.1rem; justify-self: start; }
+        .paywall-btn { grid-column: 1 / -1; margin-top: 0.5rem; padding: 0.8rem; font-size: 1rem; }
+        .paywall-close { top: 0.5rem; right: 1rem; }
+    }
+    
+    @media (max-width: 600px) and (orientation: portrait) {
+        .paywall-content {
+            padding: 1.5rem;
+            width: 95%;
+        }
+        .paywall-title { font-size: 1.5rem; }
+        .paywall-desc { font-size: 1rem; }
+        .paywall-icon { font-size: 3rem; }
     }
   `;
   document.head.appendChild(paywallStyle);
@@ -2446,6 +2486,21 @@ function createUI() {
   quitBtn.addEventListener('click', () => {
     location.reload(); // Simple restart for now
   });
+
+  // Mobile Pause Button Logic
+  // mobilePauseBtn is already defined above
+  if (mobilePauseBtn) {
+    mobilePauseBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      togglePause();
+    }, { passive: false });
+
+    mobilePauseBtn.addEventListener('click', (e) => {
+      // Fallback for non-touch click testing
+      togglePause();
+    });
+  }
 
   // Touch support for pause menu
   resumeBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); }, { passive: false });
@@ -3310,6 +3365,16 @@ function startGame() {
   document.getElementById('start-screen').classList.add('hidden');
   document.getElementById('gameover-screen').classList.remove('show');
   document.getElementById('hud').classList.remove('hidden');
+
+  document.getElementById('crosshair').classList.remove('hidden');
+
+  if (isMobile) {
+    const mbPause = document.getElementById('mobile-pause-btn');
+    if (mbPause) mbPause.classList.remove('hidden');
+
+    const joyContainer = document.getElementById('joystick-container');
+    if (joyContainer) joyContainer.style.opacity = '0.6';
+  }
 
   // Show appropriate controls based on device
   if (isMobile) {

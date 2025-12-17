@@ -2724,3 +2724,42 @@ canvas {
     display: flex;
   }
 }
+
+/* Mobile Pause Button */
+#mobile-pause-btn {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 243, 255, 0.1);
+  border: 1px solid var(--primary);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex; /* Default flex, visibility controlled by class */
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s;
+}
+
+#mobile-pause-btn:active {
+  background: var(--primary);
+  color: #000;
+  transform: scale(0.95);
+}
+
+#mobile-pause-btn.hidden {
+  display: none !important;
+}
+
+/* Hide on desktop */
+@media (min-width: 901px) {
+  #mobile-pause-btn {
+    display: none !important;
+  }
+}
