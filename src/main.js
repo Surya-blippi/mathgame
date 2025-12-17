@@ -2551,9 +2551,10 @@ function createUI() {
 
   if (paywallBuy) {
     paywallBuy.addEventListener('click', () => {
-      // Redirect to Dodo Payments
+      // Redirect to Dodo Payments (Live)
+      // Live Key: SACr6If5SQhOfh-S.XyUz10VeGcZ9z-mGfJIcJ9hDoSsAdGXDsgkjgiGdjxSdhcqk
       const returnUrl = window.location.origin + window.location.pathname + '?payment_success=true';
-      window.location.href = `https://test.checkout.dodopayments.com/buy/pdt_IjxCm9hO4i4pZH2UN5SAS?quantity=1&redirect_url=${encodeURIComponent(returnUrl)}`;
+      window.location.href = `https://checkout.dodopayments.com/buy/pdt_0NUFpsmpcMZyh6QFb15uZ?quantity=1&redirect_url=${encodeURIComponent(returnUrl)}`;
     });
   }
 
