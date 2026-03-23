@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClearSoup — Personal Branding by Nikita</title>
+    <meta name="description" content="ClearSoup by Nikita Agarwal — Personal branding is not about being seen, but about being trusted. We don't build brands. We uncover them.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-mark">clearsoup</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#framework">Framework</a></li>
+                <li><a href="#philosophy">Philosophy</a></li>
+                <li><a href="#testimonials">Voices</a></li>
+                <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#framework">Framework</a></li>
+            <li><a href="#philosophy">Philosophy</a></li>
+            <li><a href="#testimonials">Voices</a></li>
+            <li><a href="#contact">Let's Talk</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg-pattern"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <p class="hero-pretext animate-fade-up">Personal Branding by Nikita</p>
+                <h1 class="hero-headline animate-fade-up delay-1">
+                    Personal branding is not about being <em>seen</em>, but about being <em>trusted.</em>
+                </h1>
+                <p class="hero-sub animate-fade-up delay-2">
+                    You don't need to look successful. You need to be seen as valuable, persistent, and own your narrative.
+                </p>
+                <div class="hero-actions animate-fade-up delay-3">
+                    <a href="#framework" class="btn btn-primary">Explore the Framework</a>
+                    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+                </div>
+            </div>
+            <div class="hero-image animate-fade-up delay-2">
+                <div class="hero-image-wrapper">
+                    <div class="hero-image-glow"></div>
+                    <img src="assets/images/niki.png" alt="Nikita Agarwal — Personal Branding Strategist" id="heroImg">
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator animate-fade-up delay-3">
+            <div class="scroll-line"></div>
+            <span>Scroll to explore</span>
+        </div>
+    </section>
+
+    <!-- About / Intro -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-label">
+                    <span class="section-tag">Who We Are</span>
+                </div>
+                <div class="about-content">
+                    <h2 class="section-headline">We don't build brands.<br>We <em>uncover</em> them.</h2>
+                    <p class="about-text">
+                        We don't create fancy posts or superficial images. We create real value with real insights. And… it all starts with aligning internally… from self-discovery.
+                    </p>
+                    <p class="about-text">
+                        That's exactly what we help you do. Your story already exists — we help you find it, shape it, and share it with the world in a way that feels authentic to who you truly are.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Own Your Story Banner -->
+    <section class="story-banner">
+        <div class="story-banner-overlay"></div>
+        <div class="container">
+            <div class="story-content">
+                <h2 class="story-headline">Own your story.</h2>
+                <p class="story-sub">What makes you different = your power</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authority Section -->
+    <section class="authority" id="authority">
+        <div class="container">
+            <div class="authority-grid">
+                <div class="authority-left">
+                    <span class="section-tag">Our Belief</span>
+                    <h2 class="authority-headline">Authority &gt; visibility.</h2>
+                    <p class="authority-text">
+                        Focus on authority, not followers. Because followers don't build your brand, credibility does.
+                    </p>
+                    <p class="authority-text">
+                        You cut through the noise by sharing what you've learned, unlearned, lived, and proven.
+                    </p>
+                </div>
+                <div class="authority-right">
+                    <p class="authority-label">We help you:</p>
+                    <ul class="authority-list">
+                        <li>
+                            <span class="list-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="currentColor" opacity="0.15"/><path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            Speak from what you know
+                        </li>
+                        <li>
+                            <span class="list-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="currentColor" opacity="0.15"/><path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            Show up with consistency
+                        </li>
+                        <li>
+                            <span class="list-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="currentColor" opacity="0.15"/><path d="M6 10l3 3 5-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </span>
+                            Deliver real value
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- D4 Framework -->
+    <section class="framework" id="framework">
+        <div class="container">
+            <div class="framework-header">
+                <span class="section-tag">The D4 Framework</span>
+                <h2 class="section-headline">A signature framework to uncover<br>and align <em>your story.</em></h2>
+            </div>
+            <div class="framework-steps">
+                <div class="framework-step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Decode</h3>
+                        <p class="step-desc">Deep-dive into who you are. We uncover your values, experiences, strengths, and the raw materials of your authentic narrative.</p>
+                    </div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="framework-step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Define</h3>
+                        <p class="step-desc">Clarity meets strategy. We define your unique positioning, voice, and the story only you can tell.</p>
+                    </div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="framework-step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Develop</h3>
+                        <p class="step-desc">From strategy to substance. We craft content, narratives, and a brand identity that resonates and connects deeply.</p>
+                    </div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="framework-step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Deliver</h3>
+                        <p class="step-desc">Launch with impact. Your brand goes live — consistent, compelling, and unmistakably yours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="services-header">
+                <span class="section-tag">What We Offer</span>
+                <h2 class="section-headline">Services built around <em>your story.</em></h2>
+            </div>
+
+            <div class="services-grid">
+
+                <!-- 1. Personal Branding -->
+                <div class="service-card service-card--featured">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M4 24c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3 class="service-title">Personal Branding</h3>
+                    <p class="service-desc">End-to-end brand building that positions you as a credible, authentic voice in your industry.</p>
+                    <ul class="service-list">
+                        <li>Creating brand identity</li>
+                        <li>Social media strategy</li>
+                        <li>Reputation management</li>
+                        <li>Thought leadership campaigns</li>
+                        <li>Website & portfolio development</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Content & Ghostwriting -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M4 6h20M4 12h14M4 18h18M4 24h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3 class="service-title">Content & Ghostwriting</h3>
+                    <p class="service-desc">Words that sound like you — because they come from you. We just make them sharper.</p>
+                    <div class="service-sub-group">
+                        <h4 class="service-sub-title">Ghostwriting</h4>
+                        <ul class="service-list">
+                            <li>LinkedIn posts</li>
+                            <li>Founder POV content</li>
+                            <li>Thought leadership</li>
+                        </ul>
+                    </div>
+                    <div class="service-sub-group">
+                        <h4 class="service-sub-title">Blog & Long-form Content</h4>
+                        <ul class="service-list">
+                            <li>Blogs for founders / brands</li>
+                            <li>Articles (LinkedIn, Medium)</li>
+                            <li>Website content</li>
+                        </ul>
+                    </div>
+                    <div class="service-sub-group">
+                        <h4 class="service-sub-title">LinkedIn Profile & Bio Writing</h4>
+                        <ul class="service-list">
+                            <li>Headline optimization</li>
+                            <li>About section</li>
+                            <li>Personal bios</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. Visibility -->
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 14s4.5-8 12-8 12 8 12 8-4.5 8-12 8-12-8-12-8z" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </div>
+                    <h3 class="service-title">Visibility</h3>
+                    <p class="service-desc">Be seen by the right people, for the right reasons, at the right time.</p>
+                    <div class="service-sub-group">
+                        <h4 class="service-sub-title">Content Direction & Strategy</h4>
+                        <ul class="service-list">
+                            <li>What to post</li>
+                            <li>Content buckets</li>
+                            <li>Tone & themes</li>
+                        </ul>
+                    </div>
+                    <div class="service-sub-group">
+                        <h4 class="service-sub-title">Founder / Executive Positioning</h4>
+                        <ul class="service-list">
+                            <li>Thought leadership angle</li>
+                            <li>Industry voice building</li>
+                            <li>Messaging & tailored content strategies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 4. Newsletters -->
+                <div class="service-card service-card--dark">
+                    <div class="service-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="6" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M4 10l10 6 10-6" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </div>
+                    <h3 class="service-title">Long-form Thinking — Newsletters</h3>
+                    <p class="service-desc">For those who want to go deeper than social media. We help you build a consistent voice through thoughtful, long-form content that your audience actually looks forward to.</p>
+                    <ul class="service-list">
+                        <li>Personal newsletters for founders & professionals</li>
+                        <li>Thought leadership series</li>
+                        <li>Weekly / bi-weekly email content</li>
+                        <li>Content repurposing (LinkedIn → newsletter)</li>
+                        <li>Audience building direction</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Pillars / Philosophy -->
+    <section class="philosophy" id="philosophy">
+        <div class="container">
+            <div class="philosophy-header">
+                <span class="section-tag">Brand Pillars</span>
+                <h2 class="section-headline">
+                    You don't build a strong brand by trying to look impressive.<br>
+                    You build it by <em>being real.</em>
+                </h2>
+            </div>
+            <div class="pillars-equation">
+                <span class="eq-item">Authenticity</span>
+                <span class="eq-plus">+</span>
+                <span class="eq-item">Empathy</span>
+                <span class="eq-plus">+</span>
+                <span class="eq-item">Evolution</span>
+                <span class="eq-plus">+</span>
+                <span class="eq-item">Encouragement</span>
+                <span class="eq-equals">=</span>
+                <span class="eq-result">Strong Personal Brand</span>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/><path d="M20 12v8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>Authenticity</h3>
+                    <p>Be real, not "constructed." Your brand should reflect your true self, not a curated facade.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 35s-12-7.5-12-17.5C8 11.2 13.4 6 20 6s12 5.2 12 11.5C32 27.5 20 35 20 35z" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </div>
+                    <h3>Empathy</h3>
+                    <p>Your identity should help others, not just you. Build connections that matter through genuine understanding.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 32l8-12 6 8 10-20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <h3>Evolution</h3>
+                    <p>Your brand should grow with time. Embrace change, keep learning, and let your story evolve naturally.</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 8v24M12 16l8-8 8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 32h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                    </div>
+                    <h3>Encouragement</h3>
+                    <p>Share knowledge, uplift others. The strongest brands create rising tides that lift all boats.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="testimonials-header">
+                <span class="section-tag">Kind Words</span>
+                <h2 class="section-headline">What people say about<br>working with <em>Nikita.</em></h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        <svg width="32" height="24" viewBox="0 0 32 24" fill="none"><path d="M0 24V14.4C0 6.133 5.333.8 12 0l1.333 3.6C8 4.8 5.333 8.533 5.333 12H12v12H0zm18 0V14.4C18 6.133 23.333.8 30 0l1.333 3.6C26 4.8 23.333 8.533 23.333 12H30v12H18z" fill="currentColor"/></svg>
+                    </div>
+                    <p class="testimonial-text">Nikita brings stories to life with emotional clarity and precision. A go-to for thoughtful, high-impact personal brand content.</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Kiran H</span>
+                        <span class="author-title">Lakmē Salon, Bangalore</span>
+                    </div>
+                </div>
+                <div class="testimonial-card featured">
+                    <div class="testimonial-quote">
+                        <svg width="32" height="24" viewBox="0 0 32 24" fill="none"><path d="M0 24V14.4C0 6.133 5.333.8 12 0l1.333 3.6C8 4.8 5.333 8.533 5.333 12H12v12H0zm18 0V14.4C18 6.133 23.333.8 30 0l1.333 3.6C26 4.8 23.333 8.533 23.333 12H30v12H18z" fill="currentColor"/></svg>
+                    </div>
+                    <p class="testimonial-text">Nikita just gets it. Her words always move me. After 5 years, I still trust her with my story.</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Nan Samy</span>
+                        <span class="author-title">LiDigm Podcast</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-quote">
+                        <svg width="32" height="24" viewBox="0 0 32 24" fill="none"><path d="M0 24V14.4C0 6.133 5.333.8 12 0l1.333 3.6C8 4.8 5.333 8.533 5.333 12H12v12H0zm18 0V14.4C18 6.133 23.333.8 30 0l1.333 3.6C26 4.8 23.333 8.533 23.333 12H30v12H18z" fill="currentColor"/></svg>
+                    </div>
+                    <p class="testimonial-text">There's something rare about how Nikita deeply connects, understands, and brings meaning to complex ideas. She's someone you want on your side.</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Nipun Kejriwal</span>
+                        <span class="author-title">Tahini Group</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / CTA -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-left">
+                    <span class="section-tag">Let's Connect</span>
+                    <h2 class="contact-headline">Ready to uncover <em>your</em> story?</h2>
+                    <p class="contact-text">
+                        Whether you're starting fresh or refining your narrative — let's have a conversation about what makes you, you.
+                    </p>
+                    <div class="contact-details">
+                        <a href="mailto:nikita.agarwal01@outlook.com" class="contact-link">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 6l8 5 8-5" stroke="currentColor" stroke-width="1.5"/></svg>
+                            nikita.agarwal01@outlook.com
+                        </a>
+                        <a href="tel:+918050398416" class="contact-link">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3h4l2 5-2.5 1.5A11 11 0 0010.5 13.5L12 11l5 2v4a2 2 0 01-2 2A16 16 0 013 3z" stroke="currentColor" stroke-width="1.5"/></svg>
+                            +91 8050398416
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-right">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required id="formName">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required id="formEmail">
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Tell me about yourself and what you're looking for..." rows="5" required id="formMessage"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="formSubmit">Start the Conversation</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-mark logo-mark--light">clearsoup</span>
+                    <p class="footer-tagline">Uncovering brands. Not building them.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#framework">Framework</a>
+                    <a href="#philosophy">Philosophy</a>
+                    <a href="#testimonials">Voices</a>
+                    <a href="#contact">Let's Talk</a>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 ClearSoup by Nikita Agarwal. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
