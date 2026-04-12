@@ -111,13 +111,14 @@ canvas {
   inset: 0;
   background: radial-gradient(circle at center, #1a1208 0%, #0d0a04 100%);
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: center;
   z-index: 1000;
   transition: opacity 0.5s ease;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  padding: 1rem 0;
 }
 
 /* Desert sand dunes animated background */
