@@ -2,7 +2,42 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import './style.css';
-// Ad imports removed
+
+// H5 Games Ads - adBreak API
+// The adsbygoogle.js script defines adBreak() globally when loaded
+function triggerAdBreak(type, name, callbacks = {}) {
+  if (typeof adBreak === 'function') {
+    try {
+      // Mute and pause gameplay before ad
+      if (bgMusic) bgMusic.pause();
+      if (walkSound) walkSound.pause();
+
+      adBreak({
+        type: type,
+        name: name,
+        beforeAd: () => {
+          gameState.isPaused = true;
+          if (callbacks.beforeAd) callbacks.beforeAd();
+        },
+        afterAd: () => {
+          gameState.isPaused = false;
+          if (callbacks.afterAd) callbacks.afterAd();
+        },
+        adBreakDone: (placementInfo) => {
+          // Resume regardless of whether ad was shown
+          gameState.isPaused = false;
+          if (callbacks.adBreakDone) callbacks.adBreakDone(placementInfo);
+        }
+      });
+    } catch (e) {
+      console.log('Ad break error:', e);
+      if (callbacks.adBreakDone) callbacks.adBreakDone({ breakStatus: 'error' });
+    }
+  } else {
+    // adBreak not available (ad blocker or not loaded yet)
+    if (callbacks.adBreakDone) callbacks.adBreakDone({ breakStatus: 'notReady' });
+  }
+}
 
 // GLTF Model references
 let robotModel = null;
@@ -3243,11 +3278,15 @@ function showWaveTransitionAd(waveNumber, callback) {
   overlay.querySelector('.wave-transition-text').textContent = `WAVE ${waveNumber - 1} COMPLETE`;
   overlay.classList.add('show');
 
-  // Ad removed - short delay then continue
-  setTimeout(() => {
-    overlay.classList.remove('show');
-    if (callback) callback();
-  }, 2000);
+  // Show H5 Games Ad between waves
+  triggerAdBreak('next', 'wave-complete', {
+    adBreakDone: () => {
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        if (callback) callback();
+      }, 1500);
+    }
+  });
 }
 
 // Debug logger removed
@@ -4215,6 +4254,9 @@ function startGame() {
   if (!wellDone2) wellDone2 = new Audio('/welldone2.mp3');
 
   console.log('🎮 Game Started!' + (isMobile ? ' (Mobile Mode)' : ' (Desktop Mode)'));
+
+  // Show ad at game start
+  triggerAdBreak('start', 'start-game');
 }
 
 function endGame() {
@@ -4229,8 +4271,12 @@ function endGame() {
     walkSound.pause();
   }
 
-  // Go directly to final game over screen
-  showFinalGameOver();
+  // Show ad at game over, then show final screen
+  triggerAdBreak('reward', 'game-over', {
+    adBreakDone: () => {
+      showFinalGameOver();
+    }
+  });
 }
 
 function spawnRobot() {
