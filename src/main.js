@@ -275,8 +275,9 @@ function init() {
   scene.background = new THREE.Color(0xc4a46c);
   scene.fog = new THREE.Fog(0xc4a46c, 20, 120);
 
-  // Create camera
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  // Create camera - wider FOV on mobile for better visibility
+  const fov = isMobile ? 85 : 75;
+  camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.set(0, 2, 0);
 
   // Create renderer
@@ -2239,8 +2240,7 @@ function createUI() {
   mobileHint.id = 'mobile-hint';
   mobileHint.innerHTML =
     '<span>🕹️ Left stick to move</span>' +
-    '<span>👆 Swipe right side to look</span>' +
-    '<span>🔥 Fire button to shoot</span>' +
+    '<span>👆 Swipe to look, tap to shoot</span>' +
     '<span>⬆ Jump button to leap</span>';
   app.appendChild(mobileHint);
 
@@ -2483,7 +2483,6 @@ function createUI() {
       <div id="joystick-knob"></div>
     </div>
     <div id="look-area"></div>
-    <button id="fire-btn" aria-label="Fire">🔥</button>
     <button id="jump-btn" aria-label="Jump">⬆</button>
   `;
   app.appendChild(mobileControls);
@@ -2966,14 +2965,6 @@ function createUI() {
     joystickContainer.addEventListener('touchmove', onJoystickMove, { passive: false });
     joystickContainer.addEventListener('touchend', onJoystickEnd, { passive: false });
     joystickContainer.addEventListener('touchcancel', onJoystickEnd, { passive: false });
-
-    // Fire button
-    const fireBtn = document.getElementById('fire-btn');
-    fireBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (gameState.isRunning && !gameState.isPaused) onShoot();
-    }, { passive: false });
 
     // Jump button
     const jumpBtn = document.getElementById('jump-btn');

@@ -1800,10 +1800,10 @@ canvas {
 
 #joystick-container {
   position: absolute;
-  left: 5vmin;
-  bottom: 5vmin;
-  width: 24vmin;
-  height: 24vmin;
+  left: 3vmin;
+  bottom: 3vmin;
+  width: 20vmin;
+  height: 20vmin;
   background: rgba(255, 255, 255, 0.08);
   border: 2px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
@@ -1814,8 +1814,8 @@ canvas {
 }
 
 #joystick-knob {
-  width: 10vmin;
-  height: 10vmin;
+  width: 8vmin;
+  height: 8vmin;
   background: var(--primary);
   border-radius: 50%;
   box-shadow: 0 0 20px var(--primary);
@@ -1827,42 +1827,15 @@ canvas {
   position: absolute;
   right: 0;
   top: 0;
-  width: 55%;
+  width: 65%;
   height: 100%;
   pointer-events: auto;
 }
 
-#fire-btn {
-  position: absolute;
-  right: 3vmin;
-  bottom: 3vmin;
-  width: 22vmin;
-  height: 22vmin;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 50, 10, 0.85) 0%, rgba(180, 30, 5, 0.65) 100%);
-  border: 3px solid rgba(255, 120, 50, 0.9);
-  color: #fff;
-  font-size: 7vmin;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: none;
-  z-index: 160;
-  box-shadow: 0 0 20px rgba(255, 60, 20, 0.5), inset 0 0 20px rgba(255, 100, 40, 0.25);
-}
-
-#fire-btn:active {
-  background: radial-gradient(circle, rgba(255, 100, 40, 1) 0%, rgba(220, 60, 20, 0.9) 100%);
-  transform: scale(0.88);
-  box-shadow: 0 0 40px rgba(255, 80, 30, 0.8);
-}
-
 #jump-btn {
   position: absolute;
-  right: 27vmin;
-  bottom: 3vmin;
+  right: 4vmin;
+  bottom: 4vmin;
   width: 14vmin;
   height: 14vmin;
   border-radius: 50%;
