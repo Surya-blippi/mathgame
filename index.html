@@ -36,7 +36,7 @@
   <meta name="mobile-web-app-capable" content="yes" />
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -53,9 +53,9 @@
   <div id="landing">
 
     <!-- NAV -->
-    <nav class="lp-nav">
+    <nav class="lp-nav" id="lp-nav">
       <div class="lp-nav-inner">
-        <a href="/" class="lp-logo">LEARN<span>FIRE</span></a>
+        <a href="/" class="lp-logo"><span>LEARN</span>FIRE</a>
         <div class="lp-nav-links" id="lp-nav-links">
           <a href="#features">Features</a>
           <a href="#how-it-works">How It Works</a>
@@ -70,18 +70,32 @@
 
     <!-- HERO -->
     <section class="lp-hero">
-      <div class="lp-hero-grid"></div>
+      <div class="lp-hero-glow"></div>
+      <div class="lp-embers">
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+        <div class="lp-ember"></div>
+      </div>
       <div class="lp-hero-content">
-        <div class="lp-hero-badge">FREE TO PLAY &mdash; NO DOWNLOAD</div>
-        <h1 class="lp-hero-title">LEARN<span class="lp-gold">FIRE</span></h1>
-        <p class="lp-hero-subtitle">The Educational FPS That Makes Learning Addictive</p>
-        <p class="lp-hero-desc">Battle robots by solving math, English, and trivia questions in a 3D arena. Built for
-          students, loved by everyone.</p>
-        <div class="lp-hero-actions">
+        <div class="lp-hero-tag lp-reveal">Free to play &mdash; No download required</div>
+        <h1 class="lp-hero-title lp-reveal lp-reveal-delay-1">
+          <span class="lp-title-learn">Learn</span>
+          <span class="lp-title-fire">Fire</span>
+        </h1>
+        <p class="lp-hero-subtitle lp-reveal lp-reveal-delay-2">Battle robots by solving math, English, and trivia
+          questions in a 3D arena. Built for students, loved by everyone.</p>
+        <div class="lp-hero-actions lp-reveal lp-reveal-delay-3">
           <button class="lp-cta-primary" id="hero-play-btn">START PLAYING NOW</button>
-          <a href="/how-to-play.html" class="lp-cta-secondary">HOW IT WORKS</a>
+          <a href="/how-to-play.html" class="lp-cta-secondary">How It Works</a>
         </div>
-        <div class="lp-hero-stats">
+        <div class="lp-hero-stats lp-reveal lp-reveal-delay-4">
           <div class="lp-hero-stat">
             <strong>3</strong>
             <span>Game Modes</span>
@@ -102,38 +116,43 @@
       </div>
     </section>
 
+    <div class="lp-divider"></div>
+
     <!-- FEATURES -->
     <section class="lp-section" id="features">
       <div class="lp-container">
-        <h2 class="lp-section-title">Why Students Love It</h2>
-        <p class="lp-section-sub">Education meets action</p>
+        <div class="lp-section-header lp-reveal">
+          <span class="lp-section-label">Features</span>
+          <h2 class="lp-section-title">Why Students Love It</h2>
+          <p class="lp-section-desc">Education meets action — every mechanic is designed to make practice addictive.</p>
+        </div>
         <div class="lp-features-grid">
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal">
             <div class="lp-feature-icon">🎯</div>
             <h3>Learn by Doing</h3>
             <p>Every shot is an answer. Solve problems to progress — practice feels like play.</p>
           </div>
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal lp-reveal-delay-1">
             <div class="lp-feature-icon">⚡</div>
             <h3>Instant Feedback</h3>
             <p>Correct answers explode enemies. Wrong answers let robots advance. Immediate and satisfying.</p>
           </div>
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal lp-reveal-delay-2">
             <div class="lp-feature-icon">📱</div>
             <h3>Play Anywhere</h3>
             <p>Desktop, tablet, or phone. No downloads. Open your browser and play in seconds.</p>
           </div>
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal lp-reveal-delay-1">
             <div class="lp-feature-icon">📈</div>
             <h3>Adaptive Difficulty</h3>
             <p>Questions scale with your skill level. Always challenging, never overwhelming.</p>
           </div>
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal lp-reveal-delay-2">
             <div class="lp-feature-icon">🏆</div>
             <h3>Track Progress</h3>
             <p>High scores, combo streaks, and wave survival. Watch your skills improve over time.</p>
           </div>
-          <div class="lp-feature-card">
+          <div class="lp-feature-card lp-reveal lp-reveal-delay-3">
             <div class="lp-feature-icon">🔒</div>
             <h3>Safe for Kids</h3>
             <p>No chat, no social features, no data collection. Appropriate for all ages.</p>
@@ -142,63 +161,73 @@
       </div>
     </section>
 
+    <div class="lp-divider"></div>
+
     <!-- HOW IT WORKS -->
-    <section class="lp-section lp-section-alt" id="how-it-works">
+    <section class="lp-section" id="how-it-works">
       <div class="lp-container">
-        <h2 class="lp-section-title">How It Works</h2>
-        <p class="lp-section-sub">Three steps to start</p>
+        <div class="lp-section-header lp-reveal">
+          <span class="lp-section-label">Getting Started</span>
+          <h2 class="lp-section-title">How It Works</h2>
+          <p class="lp-section-desc">Three steps. Zero friction. Start learning in seconds.</p>
+        </div>
         <div class="lp-steps">
-          <div class="lp-step">
+          <div class="lp-step lp-reveal">
             <div class="lp-step-num">1</div>
             <h3>Choose Your Mode</h3>
             <p>Pick Math, English, or Quiz. Each has hundreds of unique questions.</p>
           </div>
-          <div class="lp-step-arrow">&#8594;</div>
-          <div class="lp-step">
+          <div class="lp-step lp-reveal lp-reveal-delay-2">
             <div class="lp-step-num">2</div>
             <h3>Battle Robots</h3>
-            <p>Robots show answers on their body parts. Shoot the correct one to eliminate them.</p>
+            <p>Robots display answers on their body. Shoot the correct one to eliminate them.</p>
           </div>
-          <div class="lp-step-arrow">&#8594;</div>
-          <div class="lp-step">
+          <div class="lp-step lp-reveal lp-reveal-delay-4">
             <div class="lp-step-num">3</div>
             <h3>Level Up</h3>
-            <p>Survive waves of increasing difficulty. Build combos and earn high scores.</p>
+            <p>Survive waves of increasing difficulty. Build combos and chase high scores.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <div class="lp-divider"></div>
+
     <!-- GAME MODES -->
     <section class="lp-section" id="modes">
       <div class="lp-container">
-        <h2 class="lp-section-title">Three Modes</h2>
-        <p class="lp-section-sub">Switch subjects to keep practice fresh</p>
+        <div class="lp-section-header lp-reveal">
+          <span class="lp-section-label">Game Modes</span>
+          <h2 class="lp-section-title">Three Ways to Play</h2>
+          <p class="lp-section-desc">Switch subjects to keep practice fresh and challenging.</p>
+        </div>
         <div class="lp-modes-grid">
-          <div class="lp-mode-card">
+          <div class="lp-mode-card lp-reveal">
             <div class="lp-mode-icon">🧮</div>
             <h3>Math</h3>
             <p>Addition, subtraction, multiplication, and division. Scales from single-digit to multi-step problems as
               you progress.</p>
           </div>
-          <div class="lp-mode-card">
+          <div class="lp-mode-card lp-reveal lp-reveal-delay-1">
             <div class="lp-mode-icon">📖</div>
             <h3>English</h3>
             <p>Vocabulary, grammar, spelling, and sentence completion. Build word power through increasingly challenging
               questions.</p>
           </div>
-          <div class="lp-mode-card">
+          <div class="lp-mode-card lp-reveal lp-reveal-delay-2">
             <div class="lp-mode-icon">🧠</div>
             <h3>Quiz</h3>
-            <p>Science, history, geography, and more. Great for trivia lovers and exam preparation.</p>
+            <p>Science, history, geography, and more. Perfect for trivia lovers and exam preparation.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <div class="lp-divider"></div>
+
     <!-- FINAL CTA -->
     <section class="lp-cta-section">
-      <div class="lp-container">
+      <div class="lp-container lp-reveal">
         <h2>Ready to Start Learning?</h2>
         <p>No account needed. No download required. Just click and play.</p>
         <button class="lp-cta-primary lp-cta-big" id="final-play-btn">PLAY LEARN FIRE NOW</button>
@@ -211,7 +240,7 @@
         <div class="lp-footer-col">
           <h4>LEARN FIRE</h4>
           <p>The educational FPS that makes learning addictive. Practice math, English, and general knowledge while
-            battling robots in a 3D arena. Free to play, no download required.</p>
+            battling robots in a 3D arena.</p>
         </div>
         <div class="lp-footer-col">
           <h4>GAME</h4>
@@ -281,10 +310,8 @@
       function launchGame() {
         document.getElementById('landing').style.display = 'none';
         document.getElementById('app').style.display = '';
-        // Restore game's fixed/hidden body styles
         document.documentElement.classList.remove('landing-active');
         document.body.classList.remove('landing-active');
-        // Trigger resize so Three.js recalculates
         window.dispatchEvent(new Event('resize'));
       }
 
@@ -310,6 +337,36 @@
           document.getElementById('lp-nav-links').classList.remove('open');
         });
       });
+
+      // Nav scroll effect — transparent at top, solid when scrolled
+      var nav = document.getElementById('lp-nav');
+      var scrolled = false;
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 50 && !scrolled) {
+          nav.classList.add('scrolled');
+          scrolled = true;
+        } else if (window.scrollY <= 50 && scrolled) {
+          nav.classList.remove('scrolled');
+          scrolled = false;
+        }
+      }, { passive: true });
+
+      // Scroll reveal — IntersectionObserver
+      var reveals = document.querySelectorAll('.lp-reveal');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { observer.observe(el); });
+      } else {
+        // Fallback: just show everything
+        reveals.forEach(function (el) { el.classList.add('visible'); });
+      }
     })();
   </script>
 </body>
