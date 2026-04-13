@@ -1540,9 +1540,12 @@ class Robot {
       opacity: 0
     });
 
+    // Hitbox scale multiplier - larger on mobile for easier targeting
+    const hbScale = isMobile ? 1.4 : 1.0;
+
     // HEAD hitbox (top section) - Larger for easier headshots
     const headHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.5, 1.5, 1.5), // Increased from 1.2
+      new THREE.BoxGeometry(1.5 * hbScale, 1.5 * hbScale, 1.5 * hbScale),
       hitboxMaterial
     );
     headHitbox.position.y = 3.5;
@@ -1550,19 +1553,19 @@ class Robot {
     this.head = headHitbox;
     this.group.add(headHitbox);
 
-    // CHEST hitbox (middle section) - Reduced height to prevent overlap
+    // CHEST hitbox (middle section)
     const chestHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(1.6, 1.2, 1.0), // Reduced height from 1.6 to 1.2
+      new THREE.BoxGeometry(1.6 * hbScale, 1.2 * hbScale, 1.0 * hbScale),
       hitboxMaterial
     );
-    chestHitbox.position.y = 2.0; // Lowered from 2.3
+    chestHitbox.position.y = 2.0;
     chestHitbox.userData.part = 'chest';
     this.body = chestHitbox;
     this.group.add(chestHitbox);
 
     // KNEE/LEGS hitboxes (lower section) - Separate left and right for walk animation
     const leftLegHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 2.0, 1.0),
+      new THREE.BoxGeometry(0.7 * hbScale, 2.0 * hbScale, 1.0 * hbScale),
       hitboxMaterial.clone()
     );
     leftLegHitbox.position.set(-0.35, 0.9, 0);
@@ -1571,7 +1574,7 @@ class Robot {
     this.group.add(leftLegHitbox);
 
     const rightLegHitbox = new THREE.Mesh(
-      new THREE.BoxGeometry(0.7, 2.0, 1.0),
+      new THREE.BoxGeometry(0.7 * hbScale, 2.0 * hbScale, 1.0 * hbScale),
       hitboxMaterial.clone()
     );
     rightLegHitbox.position.set(0.35, 0.9, 0);
@@ -1938,7 +1941,24 @@ class Robot {
     const intersects = raycaster.intersectObjects(this.group.children, true);
 
     if (intersects.length > 0) {
-      // Find which part was hit
+      // On mobile, hitting any part of the robot counts as the correct answer
+      // This compensates for lower touch precision and small hitboxes at distance
+      if (isMobile) {
+        // Find closest hit part for location/headshot detection
+        let hitPart = 'chest';
+        for (const intersect of intersects) {
+          let obj = intersect.object;
+          while (obj && !obj.userData.part) obj = obj.parent;
+          if (obj && obj.userData.part) { hitPart = obj.userData.part; break; }
+        }
+        return {
+          part: hitPart,
+          answer: this.correctAnswer,
+          point: intersects[0].point
+        };
+      }
+
+      // Desktop: each body part has a different answer
       for (const intersect of intersects) {
         let obj = intersect.object;
         while (obj && !obj.userData.part) {
@@ -3287,8 +3307,8 @@ let lookTouchId = null;
 let touchStartTime = 0;
 // touchStartX/Y are already defined above
 let lastTapTime = 0;
-const TAP_THRESHOLD = 200; // ms to consider a tap vs hold/drag
-const TAP_MOVE_THRESHOLD = 10; // pixels movement allowed for a tap
+const TAP_THRESHOLD = 250; // ms to consider a tap vs hold/drag
+const TAP_MOVE_THRESHOLD = 15; // pixels movement allowed for a tap
 
 function onTouchStart(event) {
   event.preventDefault();
