@@ -111,14 +111,12 @@ canvas {
   inset: 0;
   background: radial-gradient(circle at center, #1a1208 0%, #0d0a04 100%);
   display: flex;
-  align-items: safe center;
+  align-items: center;
   justify-content: center;
   z-index: 1000;
   transition: opacity 0.5s ease;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  padding: 1rem 0;
+  overflow: hidden;
+  padding: 0;
 }
 
 /* Desert sand dunes animated background */
@@ -163,7 +161,7 @@ canvas {
   text-align: center;
   position: relative;
   z-index: 2;
-  padding: 3rem 4rem;
+  padding: 2vh 3rem;
   background: rgba(30, 22, 10, 0.7);
   border: 1px solid rgba(212, 160, 85, 0.2);
   box-shadow:
@@ -172,6 +170,8 @@ canvas {
   backdrop-filter: blur(20px);
   border-radius: 20px;
   margin: 1rem;
+  max-height: 98vh;
+  max-height: 98dvh;
 }
 
 .game-title {
@@ -663,25 +663,21 @@ canvas {
   align-items: center;
   width: 100%;
   max-width: 900px;
-  height: min-content;
 }
 
 /* Dynamic resizing for Game Title */
 .game-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: clamp(3rem, 10vw, 8rem);
-  /* Responsive font size */
+  font-size: clamp(2.5rem, 7vw, 5rem);
   font-weight: 900;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   line-height: 1.1;
   text-shadow: 0 0 20px var(--primary-glow);
   position: relative;
   z-index: 2;
-  margin-top: auto;
-  /* Push down */
 }
 
 .subtitle {
@@ -702,7 +698,7 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2vh;
 }
 
 .title-underline {
@@ -731,11 +727,11 @@ canvas {
 /* Mode Selection Label */
 .mode-label {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 4px;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1vh;
   font-weight: 400;
 }
 
@@ -744,13 +740,11 @@ canvas {
 .mode-select {
   display: flex;
   flex-direction: row !important;
-  /* Force horizontal */
-  gap: 1.5rem;
+  gap: 1rem;
   justify-content: center;
   align-items: stretch;
   flex-wrap: nowrap;
-  /* Don't wrap on desktop */
-  margin-bottom: 2rem;
+  margin-bottom: 1vh;
   perspective: 1000px;
   width: 100%;
   max-width: 900px;
@@ -760,11 +754,10 @@ canvas {
   background: linear-gradient(135deg, rgba(40, 30, 15, 0.8) 0%, rgba(60, 45, 20, 0.6) 100%);
   border: 1px solid rgba(212, 160, 85, 0.3);
   border-radius: 12px;
-  padding: 1.5rem 1rem;
+  padding: 1rem 1rem;
   width: 180px;
   min-width: 150px;
   flex: 0 0 auto;
-  /* Don't grow or shrink */
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
@@ -773,7 +766,7 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.4rem;
 }
 
 .mode-card::before {
@@ -874,11 +867,11 @@ canvas {
 .gun-select {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 0.8rem;
   justify-content: center;
   align-items: stretch;
   flex-wrap: nowrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.5vh;
   width: 100%;
   max-width: 600px;
 }
@@ -887,7 +880,7 @@ canvas {
   background: linear-gradient(135deg, rgba(40, 30, 15, 0.8) 0%, rgba(60, 45, 20, 0.6) 100%);
   border: 1px solid rgba(212, 160, 85, 0.3);
   border-radius: 12px;
-  padding: 1rem 0.8rem;
+  padding: 0.7rem 0.8rem;
   width: 150px;
   min-width: 120px;
   flex: 0 0 auto;
@@ -899,7 +892,7 @@ canvas {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .gun-card:hover {
@@ -1039,9 +1032,9 @@ canvas {
 }
 
 .restore-link {
-  margin-top: 2rem;
+  margin-top: 0.8vh;
   font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
   text-decoration: underline;
   cursor: pointer;
@@ -1167,8 +1160,8 @@ canvas {
   }
 
   .start-content {
-    padding: 2rem 1rem 8rem;
-    justify-content: flex-start;
+    padding: 1.5rem 1rem 2rem;
+    justify-content: center;
   }
 
   .start-btn {
@@ -1179,9 +1172,21 @@ canvas {
 
 /* Landscape mobile - compact horizontal */
 @media (max-height: 500px) and (orientation: landscape) {
+  #start-screen {
+    overflow: hidden;
+  }
+
   .game-title {
-    font-size: 1.6rem;
-    margin-bottom: 0.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .title-container {
+    margin-bottom: 0.3rem;
+  }
+
+  .best-score-display {
+    display: none;
   }
 
   .subtitle,
@@ -1253,23 +1258,22 @@ canvas {
 /* Specific fix for Landscape Mobile */
 @media (max-height: 600px) and (orientation: landscape) {
   #start-screen {
-    align-items: flex-start;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    overflow: hidden;
   }
 
   .start-content {
     flex-direction: column;
     flex-wrap: nowrap;
-    justify-content: flex-start;
-    padding: 0.5rem 1rem 2rem;
+    justify-content: center;
+    padding: 0.5rem 1rem 1rem;
     min-height: auto;
   }
 
   .game-title {
     width: 100%;
-    font-size: 1.8rem;
-    margin-bottom: 0.3rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.2rem;
   }
 
   .subtitle,
@@ -2920,7 +2924,6 @@ canvas {
 /* Footer Links (Start Screen) */
 .start-footer {
   position: relative;
-  /* Changed from absolute to flow with content */
   bottom: auto;
   left: auto;
   transform: none;
@@ -2930,15 +2933,14 @@ canvas {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1.5rem;
   z-index: 10;
   background: rgba(0, 0, 0, 0.6);
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.5rem;
   border-radius: 50px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: 3rem;
-  /* Spacing from Start Button */
+  margin-top: 1.5vh;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -3358,23 +3360,23 @@ canvas {
 
 /* ==================== BEST SCORE DISPLAY (Start Screen) ==================== */
 .best-score-display {
-  margin-top: 1.5rem;
+  margin-top: 0.8vh;
   text-align: center;
 }
 
 .best-score-label {
   font-family: 'Orbitron', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 4px;
   text-transform: uppercase;
   display: block;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .best-score-value {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 900;
   color: #ffd700;
   text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);

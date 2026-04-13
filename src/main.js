@@ -2207,7 +2207,7 @@ function createUI() {
         </div>
       </div>
 
-      <p class="mode-label" style="margin-top:1.5rem">CHOOSE YOUR WEAPON</p>
+      <p class="mode-label" style="margin-top:0.5vh">CHOOSE YOUR WEAPON</p>
 
       <div class="gun-select">
         <div class="gun-card selected" id="gun-plasma" data-gun="plasma">
