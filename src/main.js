@@ -2436,7 +2436,7 @@ function createUI() {
   // Mobile Pause Button (HUD)
   const mobilePauseBtn = document.createElement('button');
   mobilePauseBtn.id = 'mobile-pause-btn';
-  mobilePauseBtn.innerHTML = '⏸';
+  mobilePauseBtn.innerHTML = '❚❚';
   mobilePauseBtn.className = 'hidden';
   app.appendChild(mobilePauseBtn);
 

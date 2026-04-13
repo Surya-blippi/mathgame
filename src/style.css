@@ -3101,32 +3101,33 @@ canvas {
   }
 }
 
-/* Mobile Pause Button */
+/* Mobile Pause Button — positioned top-right, offset below combo HUD */
 #mobile-pause-btn {
   position: fixed;
-  top: max(20px, env(safe-area-inset-top));
-  right: max(20px, env(safe-area-inset-right));
-  width: 50px;
-  height: 50px;
-  background: rgba(0, 243, 255, 0.1);
-  border: 1px solid var(--primary);
-  border-radius: 50%;
+  top: max(60px, calc(env(safe-area-inset-top) + 50px));
+  right: max(12px, env(safe-area-inset-right));
+  width: 48px;
+  height: 48px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
   color: #fff;
-  font-size: 1.5rem;
-  display: flex; /* Default flex, visibility controlled by class */
+  font-size: 1.4rem;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 200;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   cursor: pointer;
   pointer-events: auto;
   transition: all 0.2s;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
 
 #mobile-pause-btn:active {
   background: var(--primary);
   color: #000;
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 #mobile-pause-btn.hidden {
