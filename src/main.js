@@ -1941,18 +1941,45 @@ class Robot {
     const intersects = raycaster.intersectObjects(this.group.children, true);
 
     if (intersects.length > 0) {
-      // On mobile, use the same answer logic as desktop — return the answer
-      // assigned to whichever body part was actually hit
+      // On mobile, enlarged hitboxes (1.4x) overlap at distance, causing the
+      // raycaster to return the wrong body part first. Fix: collect all hit
+      // body parts, then pick the one whose world-space center is closest to
+      // the ray. This ensures the part the player is actually aiming at wins,
+      // while still keeping large hitboxes for easy tapping.
       if (isMobile) {
-        let hitPart = 'chest';
+        // Collect unique hit body-part meshes
+        const hitParts = new Map(); // part name -> mesh
         for (const intersect of intersects) {
           let obj = intersect.object;
           while (obj && !obj.userData.part) obj = obj.parent;
-          if (obj && obj.userData.part) { hitPart = obj.userData.part; break; }
+          if (obj && obj.userData.part && !hitParts.has(obj.userData.part)) {
+            hitParts.set(obj.userData.part, obj);
+          }
         }
+
+        // Find the body part whose center is closest to the ray
+        const rayOrigin = raycaster.ray.origin;
+        const rayDir = raycaster.ray.direction;
+        let bestPart = 'chest';
+        let bestDist = Infinity;
+        const _v = new THREE.Vector3();
+
+        for (const [partName, mesh] of hitParts) {
+          // Get world position of the body part's center
+          mesh.getWorldPosition(_v);
+          // Compute perpendicular distance from this center to the ray
+          _v.sub(rayOrigin);
+          const projection = _v.dot(rayDir);
+          const perpendicularDistSq = _v.lengthSq() - projection * projection;
+          if (perpendicularDistSq < bestDist) {
+            bestDist = perpendicularDistSq;
+            bestPart = partName;
+          }
+        }
+
         return {
-          part: hitPart,
-          answer: this.answers[hitPart],
+          part: bestPart,
+          answer: this.answers[bestPart],
           point: intersects[0].point
         };
       }
