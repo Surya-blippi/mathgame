@@ -2245,9 +2245,12 @@ function createUI() {
       </div>
       
       <div class="start-footer">
-        <a href="/about.html" class="footer-link">About Mission</a>
-        <a href="/privacy.html" class="footer-link">Privacy Protocol</a>
-        <a href="/contact.html" class="footer-link">Comms Channel</a>
+        <a href="/about.html" class="footer-link">About</a>
+        <a href="/how-to-play.html" class="footer-link">How to Play</a>
+        <a href="/blog.html" class="footer-link">Blog</a>
+        <a href="/privacy.html" class="footer-link">Privacy</a>
+        <a href="/terms.html" class="footer-link">Terms</a>
+        <a href="/contact.html" class="footer-link">Contact</a>
       </div>
       <div class="restore-link" id="restore-btn-link">Restore Purchase</div>
 

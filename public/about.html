@@ -12,211 +12,208 @@
     </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a1a" />
-    <title>About - Learn Fire</title>
+    <meta name="description"
+        content="Learn about Learn Fire, the educational FPS game that makes learning math, English, and general knowledge fun through interactive 3D gameplay." />
+    <title>About - Learn Fire | Educational FPS Game</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;700&display=swap"
         rel="stylesheet">
-    <style>
-        :root {
-            --primary: #00f3ff;
-            --primary-glow: rgba(0, 243, 255, 0.5);
-            --accent: #ffd700;
-            --bg-dark: #0a0a1a;
-            --text-primary: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'Rajdhani', sans-serif;
-            min-height: 100vh;
-            overflow-y: auto;
-            background-image:
-                linear-gradient(rgba(10, 10, 26, 0.95), rgba(10, 10, 26, 0.95)),
-                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300f3ff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
-
-        .page-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .page-header h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary);
-            font-size: 1.8rem;
-            text-shadow: 0 0 10px var(--primary-glow);
-        }
-
-        .nav-back-btn {
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 0.5rem 1rem;
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-back-btn:hover {
-            background: var(--primary);
-            color: #000;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .page-content {
-            background: rgba(16, 24, 48, 0.6);
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            padding: 2rem;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .page-content h2,
-        .page-content h3 {
-            color: var(--accent);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            border-left: 3px solid var(--accent);
-            padding-left: 1rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .page-content p {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #ccc;
-            margin-bottom: 1rem;
-        }
-
-        .page-content a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .page-content a:hover {
-            text-decoration: underline;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .feature-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card h3 {
-            border: none;
-            padding-left: 0;
-            margin-top: 0;
-        }
-
-        @media (max-width: 600px) {
-            .page-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .page-content {
-                padding: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/pages.css" />
 </head>
 
 <body>
-    <div class="page-container obsidian-glass">
+    <nav class="site-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-logo">LEARN FIRE</a>
+            <div class="nav-links">
+                <a href="/about.html" class="active">About</a>
+                <a href="/how-to-play.html">How to Play</a>
+                <a href="/blog.html">Blog</a>
+                <a href="/contact.html">Contact</a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+        </div>
+    </nav>
+
+    <div class="page-container">
         <div class="page-header">
-            <h1 class="glitch-text" data-text="MISSION BRIEFING">MISSION BRIEFING</h1>
-            <a href="/" class="nav-back-btn">⬅ RETURN TO MISSION</a>
+            <h1>ABOUT LEARN FIRE</h1>
+            <p class="page-subtitle">Turning education into an adventure, one question at a time</p>
         </div>
 
-        <div class="page-content about-content">
-            <section class="mission-statement">
-                <h2>THE OBJECTIVE: LEARNING MADE FUN</h2>
-                <p><strong>Learn Fire</strong> was built on a simple premise: Education shouldn't be boring. By
-                    combining the adrenaline-pumping mechanics of a First-Person Shooter (FPS) with core educational
-                    concepts, we transform study time into play time.</p>
+        <div class="page-content">
+
+            <section>
+                <h2>Our Mission</h2>
+                <p><strong>Learn Fire</strong> was built on a single conviction: education should never feel like a
+                    chore. By combining the fast-paced, adrenaline-pumping mechanics of a first-person shooter with core
+                    academic concepts, we transform study sessions into play sessions. Every correct answer is a victory.
+                    Every defeated robot is a problem solved. Every high score is proof of real learning.</p>
+                <p>We believe that when students are genuinely engaged, they learn faster, retain more, and develop a
+                    positive relationship with subjects that might otherwise feel intimidating. Math anxiety, vocabulary
+                    struggles, and test nervousness all fade when the learner is having fun and building confidence
+                    through repeated success.</p>
             </section>
 
-            <section class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧮</div>
-                    <h3>Mental Math</h3>
-                    <p>Sharpen your arithmetic skills under pressure. Calculate quickly to defeat enemies.</p>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Game Modes</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📖</div>
-                    <h3>English Mastery</h3>
-                    <p>Test your vocabulary and grammar. Identify the right answers to progress.</p>
+                <div class="stat-item">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Questions</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3>Quiz Mode</h3>
-                    <p>Challenge your general knowledge in a high-stakes environment.</p>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Downloads Required</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Free to Play</span>
+                </div>
+            </div>
+
+            <section>
+                <h2>How It Works</h2>
+                <p>Learn Fire is a browser-based 3D game built with modern web technologies. Players are dropped into an
+                    immersive arena where waves of robot enemies approach from all directions. Each robot displays an
+                    educational question — a math problem, an English question, or a trivia challenge — with different
+                    answer options mapped to different body parts.</p>
+                <p>To defeat an enemy, players must identify the correct answer and shoot the corresponding body section.
+                    Correct answers earn points and build combo multipliers. Wrong answers let the robot keep advancing.
+                    As waves progress, questions become harder and robots move faster, creating a natural difficulty curve
+                    that continuously challenges the player at their level.</p>
+                <p>The game works on both desktop computers and mobile devices with no installation required. Simply open
+                    your browser, visit learnfire.live, and start playing. On desktop, you use keyboard and mouse
+                    controls. On mobile, intuitive touch controls with a virtual joystick and tap-to-shoot make the
+                    experience equally accessible.</p>
+            </section>
+
+            <section>
+                <h2>Game Modes</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🧮</div>
+                        <h3>Math Mode</h3>
+                        <p>Sharpen arithmetic skills with addition, subtraction, multiplication, and division problems
+                            that scale in difficulty. Perfect for building mental math speed and confidence with numbers.
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📖</div>
+                        <h3>English Mode</h3>
+                        <p>Expand your vocabulary and reinforce grammar through word definitions, synonyms, antonyms,
+                            sentence completion, and spelling challenges across increasing difficulty levels.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Quiz Mode</h3>
+                        <p>Test your breadth of knowledge with general trivia spanning science, history, geography, and
+                            more. Great preparation for academic exams and quiz competitions.</p>
+                    </div>
                 </div>
             </section>
 
             <section>
-                <h2>Why "Learn Fire"?</h2>
-                <p> Traditional learning apps can feel passive. In Learn Fire, every correct answer is a victory. The
-                    "Gamification" of learning keeps engagement high, helping students practice longer and retain more.
+                <h2>The Science of Game-Based Learning</h2>
+                <p>Research in educational psychology consistently demonstrates that active learning — where students
+                    engage with material rather than passively receiving it — produces significantly better outcomes. Game
+                    -based learning takes this a step further by adding motivation, reward systems, and immediate
+                    feedback.</p>
+                <p>When a student solves a math problem in Learn Fire, they receive instant visual and auditory feedback:
+                    the robot explodes, the score increases, and the combo counter ticks up. This multi-sensory response
+                    creates stronger memory encoding than simply seeing a checkmark on a worksheet. The time pressure
+                    added by approaching enemies forces the brain to develop faster processing pathways — the kind of
+                    mental agility that transfers to timed tests and real-world situations.</p>
+                <p>Multiple studies have shown that students who practice through educational games demonstrate improved
+                    problem-solving speed, greater willingness to tackle challenging problems, and higher overall
+                    engagement with the subject matter compared to traditional study methods alone.</p>
+            </section>
+
+            <section>
+                <h2>Who Is Learn Fire For?</h2>
+                <p><strong>Students (Ages 8+):</strong> Whether you are practicing multiplication tables, preparing for
+                    a vocabulary test, or just looking for a fun way to learn, Learn Fire adapts to your level. Early
+                    waves are accessible for younger players, while later waves challenge even adults.</p>
+                <p><strong>Parents:</strong> Turn screen time into productive learning time. Learn Fire gives your
+                    children an educational alternative to purely entertainment-focused games. Track progress through
+                    high scores and see improvement over time.</p>
+                <p><strong>Teachers:</strong> Use Learn Fire as a classroom warm-up activity, homework supplement, or
+                    reward for completing assignments. The competitive element of high scores motivates students to
+                    practice voluntarily. Multiple game modes mean you can align the practice with your current
+                    curriculum.</p>
+                <p><strong>Lifelong Learners:</strong> Adults looking to keep their minds sharp will find the
+                    progressively challenging waves a satisfying mental workout. Quiz mode is particularly popular with
+                    trivia enthusiasts and anyone preparing for competitive exams.</p>
+            </section>
+
+            <section>
+                <h2>Built with Modern Technology</h2>
+                <p>Learn Fire is built using Three.js for 3D rendering, running entirely in the browser with WebGL. This
+                    means no plugins, no downloads, and no compatibility issues. The game loads in seconds and runs
+                    smoothly on modern devices including smartphones and tablets.</p>
+                <p>We continuously optimize for performance across all platforms. Mobile players get an experience
+                    specifically tuned for touch controls, with adjusted field of view, optimized rendering, and
+                    responsive UI elements designed for smaller screens in landscape orientation.</p>
+            </section>
+
+            <section>
+                <h2>Our Commitment</h2>
+                <p>Learn Fire is a constantly evolving project. We are committed to:</p>
+                <ul>
+                    <li>Adding new subjects and question types regularly</li>
+                    <li>Improving game performance and accessibility across all devices</li>
+                    <li>Keeping the core game free and accessible to all learners</li>
+                    <li>Listening to feedback from students, parents, and educators</li>
+                    <li>Maintaining a safe, ad-appropriate experience suitable for all ages</li>
+                </ul>
+                <p>Have a suggestion or want to contribute question content? We would love to hear from you at
+                    <a href="mailto:hello@learnfire.live">hello@learnfire.live</a>.
                 </p>
-                <p>Whether you're practicing multiplication tables or learning new words, the immediate feedback loop of
-                    the game makes improvement satisfying.</p>
             </section>
 
-            <section class="dev-note">
-                <h3>Developer's Note</h3>
-                <p>This project is constantly evolving. We are dedicated to adding more subjects, game modes, and
-                    features to help learners worldwide.</p>
-            </section>
-
+            <div class="cta-box">
+                <h2>Ready to Start Learning?</h2>
+                <p>Jump into the arena and discover how fun education can be.</p>
+                <a href="/" class="cta-btn">PLAY NOW</a>
+            </div>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <h4>Learn Fire</h4>
+                <p>The educational FPS that makes learning fun. Practice math, English, and general knowledge while
+                    battling robots in an exciting 3D arena.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <a href="/">Play Game</a>
+                <a href="/about.html">About</a>
+                <a href="/how-to-play.html">How to Play</a>
+                <a href="/blog.html">Blog</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/terms.html">Terms of Service</a>
+                <a href="/contact.html">Contact</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Learn Fire. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelector('.nav-toggle').addEventListener('click', function () {
+            document.querySelector('.nav-links').classList.toggle('open');
+        });
+    </script>
 </body>
 
 </html>
