@@ -1941,10 +1941,9 @@ class Robot {
     const intersects = raycaster.intersectObjects(this.group.children, true);
 
     if (intersects.length > 0) {
-      // On mobile, hitting any part of the robot counts as the correct answer
-      // This compensates for lower touch precision and small hitboxes at distance
+      // On mobile, use the same answer logic as desktop — return the answer
+      // assigned to whichever body part was actually hit
       if (isMobile) {
-        // Find closest hit part for location/headshot detection
         let hitPart = 'chest';
         for (const intersect of intersects) {
           let obj = intersect.object;
@@ -1953,7 +1952,7 @@ class Robot {
         }
         return {
           part: hitPart,
-          answer: this.correctAnswer,
+          answer: this.answers[hitPart],
           point: intersects[0].point
         };
       }
