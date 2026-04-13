@@ -1941,39 +1941,37 @@ class Robot {
     const intersects = raycaster.intersectObjects(this.group.children, true);
 
     if (intersects.length > 0) {
-      // On mobile, enlarged hitboxes (1.4x) overlap at distance, causing the
-      // raycaster to return the wrong body part first. Fix: collect all hit
-      // body parts, then pick the one whose world-space center is closest to
-      // the ray. This ensures the part the player is actually aiming at wins,
-      // while still keeping large hitboxes for easy tapping.
+      // MOBILE: Enlarged hitboxes (1.4x) overlap heavily at distance, so the
+      // raycaster often returns intersections with the WRONG body part.
+      // The correct body part might not even be intersected at all — e.g. aiming
+      // at the head but only the overlapping chest hitbox gets hit.
+      //
+      // Solution: use the raycaster ONLY to confirm the robot was hit. Then
+      // determine the body part by projecting all three part centers to screen
+      // space (NDC) and picking the one closest to the crosshair at (0,0).
+      // This is perspective-correct, distance-independent, and matches exactly
+      // what the player sees on screen.
       if (isMobile) {
-        // Collect unique hit body-part meshes
-        const hitParts = new Map(); // part name -> mesh
-        for (const intersect of intersects) {
-          let obj = intersect.object;
-          while (obj && !obj.userData.part) obj = obj.parent;
-          if (obj && obj.userData.part && !hitParts.has(obj.userData.part)) {
-            hitParts.set(obj.userData.part, obj);
-          }
-        }
+        const _worldPos = new THREE.Vector3();
+        const parts = [
+          { name: 'head', mesh: this.head },
+          { name: 'chest', mesh: this.body },
+          { name: 'knee', mesh: this.leftLeg }
+        ];
 
-        // Find the body part whose center is closest to the ray
-        const rayOrigin = raycaster.ray.origin;
-        const rayDir = raycaster.ray.direction;
         let bestPart = 'chest';
-        let bestDist = Infinity;
-        const _v = new THREE.Vector3();
+        let bestScreenDist = Infinity;
 
-        for (const [partName, mesh] of hitParts) {
-          // Get world position of the body part's center
-          mesh.getWorldPosition(_v);
-          // Compute perpendicular distance from this center to the ray
-          _v.sub(rayOrigin);
-          const projection = _v.dot(rayDir);
-          const perpendicularDistSq = _v.lengthSq() - projection * projection;
-          if (perpendicularDistSq < bestDist) {
-            bestDist = perpendicularDistSq;
-            bestPart = partName;
+        for (const { name, mesh } of parts) {
+          if (!mesh) continue;
+          // Get this body part's center in world space
+          mesh.getWorldPosition(_worldPos);
+          // Project to NDC (-1 to 1 on each axis); crosshair is at (0, 0)
+          _worldPos.project(camera);
+          const distSq = _worldPos.x * _worldPos.x + _worldPos.y * _worldPos.y;
+          if (distSq < bestScreenDist) {
+            bestScreenDist = distSq;
+            bestPart = name;
           }
         }
 
