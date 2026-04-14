@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin-restore.html
+Disallow: /test-gltf.html
+
+Sitemap: https://learnfire.live/sitemap.xml
