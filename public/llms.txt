@@ -1,0 +1,30 @@
+# LearnFire
+
+> LearnFire is a free browser-based 3D educational first-person shooter that turns learning into a game. Players battle robots in a desert arena by shooting the correct answer to math, English, or general-knowledge quiz questions displayed on each enemy's body parts (head, chest, knees). Built with Three.js, runs directly in any modern browser — no download required. Works on desktop and mobile.
+
+## Core
+
+- [Home / Play](https://learnfire.live/): Landing page and game entry point. Select game mode (Math, Quiz, English) and weapon (Plasma, Shotgun, Railgun), then start the mission.
+- [How to Play](https://learnfire.live/how-to-play.html): Full gameplay guide — controls, game modes, scoring system, tips for mobile and desktop.
+- [About](https://learnfire.live/about.html): Project background, mission, and what makes LearnFire different from typical edutainment.
+- [Blog](https://learnfire.live/blog.html): Articles on learning, gamification, game updates, and educational tips.
+
+## Gameplay
+
+- Three modes: Math (arithmetic, squares), Quiz (trivia across topics), English (vocabulary and grammar).
+- Each enemy robot displays a question overhead and three possible answers on its head, chest, and knees.
+- Shoot the body part with the correct answer to destroy the enemy. Wrong answers do not kill — they waste ammo and time.
+- Headshots give 2x points. Combos multiply score (up to 10x). Waves advance every 5 kills.
+- Three weapons with different fire rates and damage profiles.
+
+## Platform
+
+- Desktop: mouse + keyboard (WASD to move, mouse to aim, click to shoot, ESC to pause).
+- Mobile: touch controls with virtual joystick, tap to shoot, dedicated pause button. Landscape orientation required.
+- No account, no download, no install. Entirely client-side 3D game built on Three.js.
+
+## Support
+
+- [Contact](https://learnfire.live/contact.html): Support, feedback, and bug reports.
+- [Privacy Policy](https://learnfire.live/privacy.html)
+- [Terms of Service](https://learnfire.live/terms.html)
